@@ -1,0 +1,9 @@
+<resources>
+  <string name="app_name">RxBluetooth</string>
+  <string name="menu_countries">Show countries</string>
+  <string name="menu_contacts">Show contacts</string>
+  <string name="start_dis">Start discovery</string>
+  <string name="stop_dis">Stop discovery</string>
+  <string name="button_restart">Restart?</string>
+  <string name="button_searching">Searching...</string>
+</resources>

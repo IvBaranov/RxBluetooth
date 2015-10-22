@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+
+android {
+  compileSdkVersion COMPILE_SDK_VERSION
+  buildToolsVersion BUILD_TOOLS_VERSION
+
+  defaultConfig {
+    minSdkVersion MIN_SDK_VERSION
+    targetSdkVersion TARGET_SDK_VERSION
+    versionName VERSION_NAME
+  }
+}
+
+dependencies {
+  compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+
+  // Because RxAndroid releases are few and far between, it is recommended you also
+  // explicitly depend on RxJava's latest version for bug fixes and new features.
+  compile 'io.reactivex:rxjava:1.0.14'
+  compile 'io.reactivex:rxandroid:1.0.1'
+}
