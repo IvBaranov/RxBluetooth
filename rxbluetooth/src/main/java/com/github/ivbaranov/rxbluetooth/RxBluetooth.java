@@ -45,16 +45,6 @@ public class RxBluetooth {
   }
 
   /**
-   * Returns local Bluetooth adapter.
-   *
-   * @return the default local adapter, or null if Bluetooth is not supported
-   * on this hardware platform
-   */
-  public BluetoothAdapter getBluetoothAdapter() {
-    return mBluetoothAdapter;
-  }
-
-  /**
    * Return true if Bluetooth is available.
    *
    * @return true if mBluetoothAdapter is not null or it's address is empty, otherwise Bluetooth is
