@@ -36,8 +36,6 @@ import rx.subscriptions.Subscriptions;
  * Enables clients to listen to bluetooth events using RxJava Observables.
  */
 public class RxBluetooth {
-  public static final int REQUEST_ENABLE_BT = 62884;
-
   private BluetoothAdapter mBluetoothAdapter;
 
   public RxBluetooth() {
