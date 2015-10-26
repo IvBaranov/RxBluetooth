@@ -18,6 +18,8 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
+  private static final int REQUEST_ENABLE_BT = 1;
+
   private Button start;
   private Button stop;
   private ListView result;
@@ -36,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
     rxBluetooth = new RxBluetooth();
     if (!rxBluetooth.isBluetoothEnabled()) {
-      rxBluetooth.enableBluetooth(this);
+      rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
     }
 
     deviceSubscription = rxBluetooth.observeDevices(this)

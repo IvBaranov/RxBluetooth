@@ -20,7 +20,7 @@ Usage
    ```java
    if  (!rxBluetooth.isBluetoothAvailable()) {
       // to enable blutooth via startActivityForResult()
-      rxBluetooth.enableBluetooth(this);
+      rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
    }
    ```
 

@@ -71,20 +71,7 @@ public class RxBluetooth {
    * your application) via ACTION_REQUEST_ENABLE action Intent.
    *
    * @param activity Activity
-   */
-  public void enableBluetooth(Activity activity) {
-    if (!mBluetoothAdapter.isEnabled()) {
-      Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-      activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-    }
-  }
-
-  /**
-   * This will issue a request to enable Bluetooth through the system settings (without stopping
-   * your application) via ACTION_REQUEST_ENABLE action Intent.
-   *
-   * @param activity Activity
-   * @param requestCode custom request code. Note: RequestCodes can only be a max of 0xffff (65535)
+   * @param requestCode request code
    */
   public void enableBluetooth(Activity activity, int requestCode) {
     if (!mBluetoothAdapter.isEnabled()) {
