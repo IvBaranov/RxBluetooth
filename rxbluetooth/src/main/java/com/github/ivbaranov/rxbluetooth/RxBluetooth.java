@@ -80,6 +80,8 @@ public class RxBluetooth {
 
   /**
    * Start the remote device discovery process.
+   *
+   * @return true on success, false on error
    */
   public boolean startDiscovery() {
     return mBluetoothAdapter.startDiscovery();

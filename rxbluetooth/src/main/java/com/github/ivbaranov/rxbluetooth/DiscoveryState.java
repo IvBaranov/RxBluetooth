@@ -24,7 +24,7 @@ public enum DiscoveryState {
    * method from RxJava
    *
    * @param states many discovery states or single state
-   * @return Func1<DiscoveryState, Boolean> from RxJava
+   * @return {@link Func1} checking function
    */
   public static Func1<DiscoveryState, Boolean> isEqualTo(final DiscoveryState... states) {
     return new Func1<DiscoveryState, Boolean>() {
@@ -47,7 +47,7 @@ public enum DiscoveryState {
    * method from RxJava
    *
    * @param states many discovery states or single state
-   * @return Func1<DiscoveryState, Boolean> from RxJava
+   * @return {@link Func1} checking function
    */
   public static Func1<DiscoveryState, Boolean> isNotEqualTo(final DiscoveryState... states) {
     return new Func1<DiscoveryState, Boolean>() {
