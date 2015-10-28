@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
   compileSdkVersion COMPILE_SDK_VERSION
@@ -8,14 +9,24 @@ android {
     minSdkVersion MIN_SDK_VERSION
     targetSdkVersion TARGET_SDK_VERSION
     versionName VERSION_NAME
+    versionCode VERSION_CODE.toInteger()
   }
 }
 
 dependencies {
   compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
 
-  // Because RxAndroid releases are few and far between, it is recommended you also
-  // explicitly depend on RxJava's latest version for bug fixes and new features.
-  compile 'io.reactivex:rxjava:1.0.14'
-  compile 'io.reactivex:rxandroid:1.0.1'
+  compile "io.reactivex:rxjava:$RXJAVA_VERSION"
+  compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
 }
+
+publish {
+  groupId = GROUP
+  artifactId = ARTIFACT_ID
+  publishVersion = VERSION_NAME
+  desc = POM_DESCRIPTION
+  licences = [POM_LICENCE_NAME]
+  website = POM_URL
+}
+
+apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
