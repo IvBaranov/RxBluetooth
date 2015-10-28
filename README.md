@@ -1,5 +1,5 @@
 RxBluetooth
-===============
+===========
 
 [![Build Status](https://travis-ci.org/IvBaranov/RxBluetooth.svg)](https://travis-ci.org/IvBaranov/RxBluetooth)
 
@@ -76,12 +76,18 @@ To observe both `DISCOVERY_STARTED` and `DISCOVERY_FINISHED`:
      });
 ```
 
+Download
+--------
+```groovy
+compile 'com.github.ivbaranov:rxbluetooth:0.0.2'
+```
+
 Developed By
---------------------
+------------
 Ivan Baranov
 
 License
------------
+-------
 
 ```
 Copyright 2015 Ivan Baranov
