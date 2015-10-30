@@ -1,5 +1,6 @@
 package com.github.ivbaranov.rxbluetooth.example;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -8,8 +9,8 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import com.github.ivbaranov.rxbluetooth.DiscoveryState;
 import com.github.ivbaranov.rxbluetooth.RxBluetooth;
+import com.github.ivbaranov.rxbluetooth.Action;
 import java.util.ArrayList;
 import java.util.List;
 import rx.Subscription;
@@ -53,9 +54,9 @@ public class MainActivity extends AppCompatActivity {
     discoveryStartSubscription = rxBluetooth.observeDiscovery(this)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .filter(DiscoveryState.isEqualTo(DiscoveryState.DISCOVERY_STARTED))
-        .subscribe(new Action1<DiscoveryState>() {
-          @Override public void call(DiscoveryState discoveryState) {
+        .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
+        .subscribe(new Action1<String>() {
+          @Override public void call(String action) {
             start.setText(R.string.button_searching);
           }
         });
@@ -63,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
     discoveryFinishSubscription = rxBluetooth.observeDiscovery(this)
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
-        .filter(DiscoveryState.isEqualTo(DiscoveryState.DISCOVERY_FINISHED))
-        .subscribe(new Action1<DiscoveryState>() {
-          @Override public void call(DiscoveryState discoveryState) {
+        .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
+        .subscribe(new Action1<String>() {
+          @Override public void call(String action) {
             start.setText(R.string.button_restart);
           }
         });

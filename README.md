@@ -48,29 +48,29 @@ rxBluetooth.observeDevices(this)
 
 ##### Observing discovery state
 
-To observe just `DISCOVERY_STARTED`:
+To observe just `ACTION_DISCOVERY_STARTED`:
 
 ```java
  rxBluetooth.observeDiscovery(this)
      .observeOn(AndroidSchedulers.mainThread())
      .subscribeOn(Schedulers.io())
-     .filter(DiscoveryState.isEqualTo(DiscoveryState.DISCOVERY_STARTED))
-     .subscribe(new Action1<DiscoveryState>() {
-       @Override public void call(DiscoveryState discoveryState) {
+     .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
+     .subscribe(new Action1<String>() {
+       @Override public void call(String action) {
          //
        }
      });
 ```
 
-To observe both `DISCOVERY_STARTED` and `DISCOVERY_FINISHED`:
+To observe both `ACTION_DISCOVERY_STARTED` and `ACTION_DISCOVERY_FINISHED`:
 
 ```java
  rxBluetooth.observeDiscovery(this)
      .observeOn(AndroidSchedulers.mainThread())
      .subscribeOn(Schedulers.io())
-     .filter(DiscoveryState.isEqualTo(DiscoveryState.DISCOVERY_STARTED, DiscoveryState.DISCOVERY_FINISHED))
-     .subscribe(new Action1<DiscoveryState>() {
-       @Override public void call(DiscoveryState discoveryState) {
+     .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
+     .subscribe(new Action1<String>() {
+       @Override public void call(String action) {
          //
        }
      });

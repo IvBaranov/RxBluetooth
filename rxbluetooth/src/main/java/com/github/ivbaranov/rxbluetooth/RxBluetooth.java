@@ -140,31 +140,23 @@ public class RxBluetooth {
   }
 
   /**
-   * Observes DiscoveryState,
-   * which can be DISCOVERY_STARTED or DISCOVERY_FINISHED
+   * Observes DiscoveryState, which can be ACTION_DISCOVERY_STARTED or ACTION_DISCOVERY_FINISHED
+   * from {@link BluetoothAdapter}.
    *
    * @param context Context of the activity or an application
    * @return RxJava Observable with DiscoveryState
    */
-  public Observable<DiscoveryState> observeDiscovery(final Context context) {
+  public Observable<String> observeDiscovery(final Context context) {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
-    return Observable.create(new Observable.OnSubscribe<DiscoveryState>() {
+    return Observable.create(new Observable.OnSubscribe<String>() {
 
-      @Override public void call(final Subscriber<? super DiscoveryState> subscriber) {
+      @Override public void call(final Subscriber<? super String> subscriber) {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
           @Override public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            switch (action) {
-              case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
-                subscriber.onNext(DiscoveryState.DISCOVERY_STARTED);
-                break;
-              case BluetoothAdapter.ACTION_DISCOVERY_FINISHED:
-                subscriber.onNext(DiscoveryState.DISCOVERY_FINISHED);
-                break;
-            }
+            subscriber.onNext(intent.getAction());
           }
         };
 
