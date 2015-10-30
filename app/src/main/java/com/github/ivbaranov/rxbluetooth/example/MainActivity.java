@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
   private Subscription deviceSubscription;
   private Subscription discoveryStartSubscription;
   private Subscription discoveryFinishSubscription;
+  private Subscription bluetoothStateOnSubscription;
+  private Subscription bluetoothStateOtherSubscription;
   private List<String> devices = new ArrayList<>();
 
   @Override protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,27 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
+    bluetoothStateOnSubscription = rxBluetooth.observeBluetoothState(this)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
+        .subscribe(new Action1<Integer>() {
+          @Override public void call(Integer integer) {
+            start.setBackgroundColor(getResources().getColor(R.color.colorActive));
+          }
+        });
+
+    bluetoothStateOtherSubscription = rxBluetooth.observeBluetoothState(this)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .filter(Action.isEqualTo(BluetoothAdapter.STATE_OFF, BluetoothAdapter.STATE_TURNING_OFF,
+            BluetoothAdapter.STATE_TURNING_ON))
+        .subscribe(new Action1<Integer>() {
+          @Override public void call(Integer integer) {
+            start.setBackgroundColor(getResources().getColor(R.color.colorInactive));
+          }
+        });
+
     start.setOnClickListener(new View.OnClickListener() {
       @Override public void onClick(View v) {
         devices.clear();
@@ -95,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
     unsubscribe(deviceSubscription);
     unsubscribe(discoveryStartSubscription);
     unsubscribe(discoveryFinishSubscription);
+    unsubscribe(bluetoothStateOnSubscription);
+    unsubscribe(bluetoothStateOtherSubscription);
   }
 
   private void addDevice(BluetoothDevice device) {

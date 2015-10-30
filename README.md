@@ -76,6 +76,28 @@ To observe both `ACTION_DISCOVERY_STARTED` and `ACTION_DISCOVERY_FINISHED`:
      });
 ```
 
+##### Observing bluetooth state
+
+```java
+rxBluetooth.observeBluetoothState(this)
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.io())
+    .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
+    .subscribe(new Action1<Integer>() {
+      @Override public void call(Integer integer) {
+        //
+      }
+    });
+```
+
+You can observe single or multiple states:
+```java
+BluetoothAdapter.STATE_OFF
+BluetoothAdapter.STATE_TURNING_ON
+BluetoothAdapter.STATE_ON
+BluetoothAdapter.STATE_TURNING_OFF
+```
+
 Download
 --------
 ```groovy

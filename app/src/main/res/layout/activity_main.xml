@@ -24,6 +24,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@color/colorInactive"
+        android:textColor="@android:color/white"
         android:text="@string/start_dis" />
 
     <Button
@@ -31,6 +33,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:background="@color/colorAccent"
+        android:textColor="@android:color/white"
         android:text="@string/stop_dis" />
   </LinearLayout>
 </FrameLayout>
