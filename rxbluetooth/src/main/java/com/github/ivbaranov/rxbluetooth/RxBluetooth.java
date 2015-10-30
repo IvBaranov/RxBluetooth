@@ -171,6 +171,40 @@ public class RxBluetooth {
     });
   }
 
+  /**
+   * Observes BluetoothState. Possible values are:
+   * {@link BluetoothAdapter#STATE_OFF},
+   * {@link BluetoothAdapter#STATE_TURNING_ON},
+   * {@link BluetoothAdapter#STATE_ON},
+   * {@link BluetoothAdapter#STATE_TURNING_OFF},
+   *
+   * @param context Context of the activity or an application
+   * @return RxJava Observable with BluetoothState
+   */
+  public Observable<Integer> observeBluetoothState(final Context context) {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+
+    return Observable.create(new Observable.OnSubscribe<Integer>() {
+
+      @Override public void call(final Subscriber<? super Integer> subscriber) {
+        final BroadcastReceiver receiver = new BroadcastReceiver() {
+          @Override public void onReceive(Context context, Intent intent) {
+            subscriber.onNext(mBluetoothAdapter.getState());
+          }
+        };
+
+        context.registerReceiver(receiver, filter);
+
+        subscriber.add(unsubscribeInUiThread(new Action0() {
+          @Override public void call() {
+            context.unregisterReceiver(receiver);
+          }
+        }));
+      }
+    });
+  }
+
   private Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
     return Subscriptions.create(new Action0() {
 
