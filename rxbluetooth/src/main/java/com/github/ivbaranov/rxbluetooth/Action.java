@@ -5,7 +5,7 @@ import rx.functions.Func1;
 public class Action {
   /**
    * Creates a function, which checks if current action equals single action or one of many
-   * actions. It can be used inside filter(...) method from RxJava
+   * actions. It can be used inside filter(...) method from RxJava.
    *
    * @param actions many actions or single action
    * @return Func1 checking function
