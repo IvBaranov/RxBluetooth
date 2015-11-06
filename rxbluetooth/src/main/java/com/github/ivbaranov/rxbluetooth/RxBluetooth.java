@@ -107,6 +107,34 @@ public class RxBluetooth {
   }
 
   /**
+   * This will issue a request to make the local device discoverable to other devices. By default,
+   * the device will become discoverable for 120 seconds.
+   *
+   * @param activity Activity
+   * @param requestCode request code
+   */
+  public void enableDiscoverability(Activity activity, int requestCode) {
+    enableDiscoverability(activity, requestCode, -1);
+  }
+
+  /**
+   * This will issue a request to make the local device discoverable to other devices. By default,
+   * the device will become discoverable for 120 seconds.  Maximum duration is capped at 300
+   * seconds.
+   *
+   * @param activity Activity
+   * @param requestCode request code
+   * @param duration discoverability duration in seconds
+   */
+  public void enableDiscoverability(Activity activity, int requestCode, int duration) {
+    Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+    if (duration >= 0) {
+      discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, duration);
+    }
+    activity.startActivityForResult(discoverableIntent, requestCode);
+  }
+
+  /**
    * Observes Bluetooth devices found while discovering.
    *
    * @param context Context of the activity or an application
@@ -191,6 +219,39 @@ public class RxBluetooth {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
           @Override public void onReceive(Context context, Intent intent) {
             subscriber.onNext(mBluetoothAdapter.getState());
+          }
+        };
+
+        context.registerReceiver(receiver, filter);
+
+        subscriber.add(unsubscribeInUiThread(new Action0() {
+          @Override public void call() {
+            context.unregisterReceiver(receiver);
+          }
+        }));
+      }
+    });
+  }
+
+  /**
+   * Observes scan mode of device. Possible values are:
+   * {@link BluetoothAdapter#SCAN_MODE_NONE},
+   * {@link BluetoothAdapter#SCAN_MODE_CONNECTABLE},
+   * {@link BluetoothAdapter#SCAN_MODE_CONNECTABLE_DISCOVERABLE}
+   *
+   * @param context Context of the activity or an application
+   * @return RxJava Observable with scan mode
+   */
+  public Observable<Integer> observeScanMode(final Context context) {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+
+    return Observable.create(new Observable.OnSubscribe<Integer>() {
+
+      @Override public void call(final Subscriber<? super Integer> subscriber) {
+        final BroadcastReceiver receiver = new BroadcastReceiver() {
+          @Override public void onReceive(Context context, Intent intent) {
+            subscriber.onNext(mBluetoothAdapter.getScanMode());
           }
         };
 
