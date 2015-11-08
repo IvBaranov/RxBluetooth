@@ -98,6 +98,27 @@ BluetoothAdapter.STATE_ON
 BluetoothAdapter.STATE_TURNING_OFF
 ```
 
+##### Observing scan mode
+
+```java
+rxBluetooth.observeScanMode(this)
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.io())
+    .filter(Action.isEqualTo(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
+    .subscribe(new Action1<Integer>() {
+      @Override public void call(Integer integer) {
+        //
+      }
+    });
+```
+
+You can observe single or multiple scan modes:
+```java
+BluetoothAdapter.SCAN_MODE_NONE
+BluetoothAdapter.SCAN_MODE_CONNECTABLE
+BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
+```
+
 Download
 --------
 ```groovy
