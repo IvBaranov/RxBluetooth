@@ -18,6 +18,7 @@ package com.github.ivbaranov.rxbluetooth;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothProfile;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -264,6 +265,49 @@ public class RxBluetooth {
         }));
       }
     });
+  }
+
+  /**
+   * Observes connection to specified profile. See also {@link BluetoothProfile.ServiceListener}.
+   *
+   * @param context Context of the activity or an application
+   * @param bluetoothProfile bluetooth profile to connect to. Can be either {@link
+   * BluetoothProfile#HEALTH},{@link BluetoothProfile#HEADSET}, {@link BluetoothProfile#A2DP},
+   * {@link BluetoothProfile#GATT} or {@link BluetoothProfile#GATT_SERVER}.
+   * @return RxJava Observable with {@link ServiceEvent}
+   */
+  public Observable<ServiceEvent> observeBluetoothProfile(final Context context,
+      final int bluetoothProfile) {
+    return Observable.create(new Observable.OnSubscribe<ServiceEvent>() {
+      @Override public void call(final Subscriber<? super ServiceEvent> subscriber) {
+        if (!mBluetoothAdapter.getProfileProxy(context, new BluetoothProfile.ServiceListener() {
+          @Override public void onServiceConnected(int profile, BluetoothProfile proxy) {
+            subscriber.onNext(new ServiceEvent(ServiceEvent.State.CONNECTED, profile, proxy));
+          }
+
+          @Override public void onServiceDisconnected(int profile) {
+            subscriber.onNext(new ServiceEvent(ServiceEvent.State.DISCONNECTED, profile, null));
+          }
+        }, bluetoothProfile)) {
+          subscriber.onError(new GetProfileProxyException());
+        }
+      }
+    });
+  }
+
+  /**
+   * Close the connection of the profile proxy to the Service.
+   *
+   * <p> Clients should call this when they are no longer using the proxy obtained from {@link
+   * #observeBluetoothProfile}.
+   * <p>Profile can be one of {@link BluetoothProfile#HEALTH},{@link BluetoothProfile#HEADSET},
+   * {@link BluetoothProfile#A2DP}, {@link BluetoothProfile#GATT} or {@link
+   * BluetoothProfile#GATT_SERVER}.
+   *
+   * @param proxy Profile proxy object
+   */
+  public void closeProfileProxy(int profile, BluetoothProfile proxy) {
+    mBluetoothAdapter.closeProfileProxy(profile, proxy);
   }
 
   private Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
