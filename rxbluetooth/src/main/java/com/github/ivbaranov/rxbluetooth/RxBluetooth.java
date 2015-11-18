@@ -301,8 +301,8 @@ public class RxBluetooth {
    * <p> Clients should call this when they are no longer using the proxy obtained from {@link
    * #observeBluetoothProfile}.
    * <p>Profile can be one of {@link BluetoothProfile#HEALTH},{@link BluetoothProfile#HEADSET},
-   * {@link
-   * BluetoothProfile#A2DP}, {@link BluetoothProfile#GATT} or {@link BluetoothProfile#GATT_SERVER}.
+   * {@link BluetoothProfile#A2DP}, {@link BluetoothProfile#GATT} or {@link
+   * BluetoothProfile#GATT_SERVER}.
    *
    * @param proxy Profile proxy object
    */
