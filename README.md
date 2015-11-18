@@ -122,7 +122,7 @@ BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:0.0.2'
+compile 'com.github.ivbaranov:rxbluetooth:0.0.3'
 ```
 
 Developed By
