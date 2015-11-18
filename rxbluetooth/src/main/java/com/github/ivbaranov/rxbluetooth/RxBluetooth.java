@@ -295,6 +295,21 @@ public class RxBluetooth {
     });
   }
 
+  /**
+   * Close the connection of the profile proxy to the Service.
+   *
+   * <p> Clients should call this when they are no longer using the proxy obtained from {@link
+   * #observeBluetoothProfile}.
+   * <p>Profile can be one of {@link BluetoothProfile#HEALTH},{@link BluetoothProfile#HEADSET},
+   * {@link
+   * BluetoothProfile#A2DP}, {@link BluetoothProfile#GATT} or {@link BluetoothProfile#GATT_SERVER}.
+   *
+   * @param proxy Profile proxy object
+   */
+  public void closeProfileProxy(int profile, BluetoothProfile proxy) {
+    mBluetoothAdapter.closeProfileProxy(profile, proxy);
+  }
+
   private Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
     return Subscriptions.create(new Action0() {
 
