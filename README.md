@@ -127,7 +127,8 @@ compile 'com.github.ivbaranov:rxbluetooth:0.0.3'
 
 Contributing
 ------------
-Make sure you use SquareAndroid code style.
+Make sure you use SquareAndroid code style. (https://github.com/square/java-code-styles)
+
 Create a branch for each feature.
 
 Developed By
