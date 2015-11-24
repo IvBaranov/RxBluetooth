@@ -37,13 +37,13 @@ Usage
 ##### Observing devices
 ```java
 rxBluetooth.observeDevices(this)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
-        .subscribe(new Action1<BluetoothDevice>() {
-          @Override public void call(BluetoothDevice bluetoothDevice) {
-            //
-          }
-        });
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .subscribe(new Action1<BluetoothDevice>() {
+        @Override public void call(BluetoothDevice bluetoothDevice) {
+          //
+        }
+      });
 ```
 
 ##### Observing discovery state
@@ -51,43 +51,43 @@ rxBluetooth.observeDevices(this)
 To observe just `ACTION_DISCOVERY_STARTED`:
 
 ```java
- rxBluetooth.observeDiscovery(this)
-     .observeOn(AndroidSchedulers.mainThread())
-     .subscribeOn(Schedulers.io())
-     .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
-     .subscribe(new Action1<String>() {
-       @Override public void call(String action) {
-         //
-       }
-     });
+rxBluetooth.observeDiscovery(this)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
+      .subscribe(new Action1<String>() {
+        @Override public void call(String action) {
+          //
+        }
+      });
 ```
 
 To observe both `ACTION_DISCOVERY_STARTED` and `ACTION_DISCOVERY_FINISHED`:
 
 ```java
- rxBluetooth.observeDiscovery(this)
-     .observeOn(AndroidSchedulers.mainThread())
-     .subscribeOn(Schedulers.io())
-     .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
-     .subscribe(new Action1<String>() {
-       @Override public void call(String action) {
-         //
-       }
-     });
+rxBluetooth.observeDiscovery(this)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
+      .subscribe(new Action1<String>() {
+        @Override public void call(String action) {
+          //
+        }
+      });
 ```
 
 ##### Observing bluetooth state
 
 ```java
 rxBluetooth.observeBluetoothState(this)
-    .observeOn(AndroidSchedulers.mainThread())
-    .subscribeOn(Schedulers.io())
-    .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
-    .subscribe(new Action1<Integer>() {
-      @Override public void call(Integer integer) {
-        //
-      }
-    });
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
+      .subscribe(new Action1<Integer>() {
+        @Override public void call(Integer integer) {
+          //
+        }
+      });
 ```
 
 You can observe single or multiple states:
@@ -102,14 +102,14 @@ BluetoothAdapter.STATE_TURNING_OFF
 
 ```java
 rxBluetooth.observeScanMode(this)
-    .observeOn(AndroidSchedulers.mainThread())
-    .subscribeOn(Schedulers.io())
-    .filter(Action.isEqualTo(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
-    .subscribe(new Action1<Integer>() {
-      @Override public void call(Integer integer) {
-        //
-      }
-    });
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .filter(Action.isEqualTo(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
+      .subscribe(new Action1<Integer>() {
+        @Override public void call(Integer integer) {
+          //
+        }
+      });
 ```
 
 You can observe single or multiple scan modes:
