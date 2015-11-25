@@ -150,7 +150,7 @@ rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:0.0.3'
+compile 'com.github.ivbaranov:rxbluetooth:0.0.4'
 ```
 
 Contributing
