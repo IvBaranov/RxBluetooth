@@ -119,6 +119,34 @@ BluetoothAdapter.SCAN_MODE_CONNECTABLE
 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 ```
 
+#### Getting the profile proxy object
+
+```java
+rxBluetooth.observeBluetoothProfile(this, myProfile)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .subscribe(new Action1<ServiceEvent>() {
+        @Override public void call(ServiceEvent serviceEvent) {
+          switch (serviceEvent.getState()) {
+           case CONNECTED:
+                BluetoothProfile bluetoothProfile = serviceEvent.getBluetoothProfile();
+                //..
+                break;
+           case DISCONNECTED:
+                //serviceEvent.getBluetoothProfile() returns null
+                break;
+            }
+          }
+        });
+```
+
+`myProfile` can be one of `BluetoothProfile.HEALTH`, `BluetoothProfile.HEADSET`, `BluetoothProfile.A2DP`, `BluetoothProfile.GATT` or `BluetoothProfile.GATT_SERVER`
+
+Clients should close profile proxy when they are no longer using the proxy obtained from `observeBluetoothProfile`:
+```java
+rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
+```
+
 Download
 --------
 ```groovy
