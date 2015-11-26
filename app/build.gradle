@@ -5,7 +5,7 @@ android {
   buildToolsVersion BUILD_TOOLS_VERSION
 
   defaultConfig {
-    applicationId "com.github.ivbaranov.rxbluetooth.exmaple"
+    applicationId "com.github.ivbaranov.rxbluetooth.example"
     minSdkVersion MIN_SDK_VERSION
     targetSdkVersion TARGET_SDK_VERSION
     versionCode VERSION_CODE.toInteger()
