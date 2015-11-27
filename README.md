@@ -36,7 +36,7 @@ Usage
 
 ##### Observing devices
 ```java
-rxBluetooth.observeDevices(this)
+rxBluetooth.observeDevices()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribeOn(Schedulers.io())
       .subscribe(new Action1<BluetoothDevice>() {
@@ -51,7 +51,7 @@ rxBluetooth.observeDevices(this)
 To observe just `ACTION_DISCOVERY_STARTED`:
 
 ```java
-rxBluetooth.observeDiscovery(this)
+rxBluetooth.observeDiscovery()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribeOn(Schedulers.io())
       .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
@@ -65,7 +65,7 @@ rxBluetooth.observeDiscovery(this)
 To observe both `ACTION_DISCOVERY_STARTED` and `ACTION_DISCOVERY_FINISHED`:
 
 ```java
-rxBluetooth.observeDiscovery(this)
+rxBluetooth.observeDiscovery()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribeOn(Schedulers.io())
       .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
@@ -79,7 +79,7 @@ rxBluetooth.observeDiscovery(this)
 ##### Observing bluetooth state
 
 ```java
-rxBluetooth.observeBluetoothState(this)
+rxBluetooth.observeBluetoothState()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribeOn(Schedulers.io())
       .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
@@ -101,7 +101,7 @@ BluetoothAdapter.STATE_TURNING_OFF
 ##### Observing scan mode
 
 ```java
-rxBluetooth.observeScanMode(this)
+rxBluetooth.observeScanMode()
       .observeOn(AndroidSchedulers.mainThread())
       .subscribeOn(Schedulers.io())
       .filter(Action.isEqualTo(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
@@ -122,7 +122,7 @@ BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 #### Getting the profile proxy object
 
 ```java
-rxBluetooth.observeBluetoothProfile(this, myProfile)
+rxBluetooth.observeBluetoothProfile(myProfile)
       .observeOn(AndroidSchedulers.mainThread())
       .subscribeOn(Schedulers.io())
       .subscribe(new Action1<ServiceEvent>() {
@@ -150,7 +150,7 @@ rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:0.0.4'
+compile 'com.github.ivbaranov:rxbluetooth:0.0.5'
 ```
 
 Contributing
