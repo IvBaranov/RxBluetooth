@@ -39,12 +39,12 @@ public class MainActivity extends AppCompatActivity {
     stop = (Button) findViewById(R.id.stop);
     result = (ListView) findViewById(R.id.result);
 
-    rxBluetooth = new RxBluetooth();
+    rxBluetooth = new RxBluetooth(this);
     if (!rxBluetooth.isBluetoothEnabled()) {
       rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
     }
 
-    deviceSubscription = rxBluetooth.observeDevices(this)
+    deviceSubscription = rxBluetooth.observeDevices()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .subscribe(new Action1<BluetoothDevice>() {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
-    discoveryStartSubscription = rxBluetooth.observeDiscovery(this)
+    discoveryStartSubscription = rxBluetooth.observeDiscovery()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
-    discoveryFinishSubscription = rxBluetooth.observeDiscovery(this)
+    discoveryFinishSubscription = rxBluetooth.observeDiscovery()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
-    bluetoothStateOnSubscription = rxBluetooth.observeBluetoothState(this)
+    bluetoothStateOnSubscription = rxBluetooth.observeBluetoothState()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
-    bluetoothStateOtherSubscription = rxBluetooth.observeBluetoothState(this)
+    bluetoothStateOtherSubscription = rxBluetooth.observeBluetoothState()
         .observeOn(AndroidSchedulers.mainThread())
         .subscribeOn(Schedulers.io())
         .filter(Action.isEqualTo(BluetoothAdapter.STATE_OFF, BluetoothAdapter.STATE_TURNING_OFF,
