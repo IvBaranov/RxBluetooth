@@ -38,9 +38,11 @@ import rx.subscriptions.Subscriptions;
  */
 public class RxBluetooth {
   private BluetoothAdapter mBluetoothAdapter;
+  private Context context;
 
-  public RxBluetooth() {
+  public RxBluetooth(Context context) {
     this.mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    this.context = context;
   }
 
   /**
@@ -138,10 +140,9 @@ public class RxBluetooth {
   /**
    * Observes Bluetooth devices found while discovering.
    *
-   * @param context Context of the activity or an application
    * @return RxJava Observable with BluetoothDevice found
    */
-  public Observable<BluetoothDevice> observeDevices(final Context context) {
+  public Observable<BluetoothDevice> observeDevices() {
     final IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
     return Observable.create(new Observable.OnSubscribe<BluetoothDevice>() {
@@ -172,10 +173,9 @@ public class RxBluetooth {
    * Observes DiscoveryState, which can be ACTION_DISCOVERY_STARTED or ACTION_DISCOVERY_FINISHED
    * from {@link BluetoothAdapter}.
    *
-   * @param context Context of the activity or an application
    * @return RxJava Observable with DiscoveryState
    */
-  public Observable<String> observeDiscovery(final Context context) {
+  public Observable<String> observeDiscovery() {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
@@ -207,10 +207,9 @@ public class RxBluetooth {
    * {@link BluetoothAdapter#STATE_ON},
    * {@link BluetoothAdapter#STATE_TURNING_OFF},
    *
-   * @param context Context of the activity or an application
    * @return RxJava Observable with BluetoothState
    */
-  public Observable<Integer> observeBluetoothState(final Context context) {
+  public Observable<Integer> observeBluetoothState() {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
@@ -240,10 +239,9 @@ public class RxBluetooth {
    * {@link BluetoothAdapter#SCAN_MODE_CONNECTABLE},
    * {@link BluetoothAdapter#SCAN_MODE_CONNECTABLE_DISCOVERABLE}
    *
-   * @param context Context of the activity or an application
    * @return RxJava Observable with scan mode
    */
-  public Observable<Integer> observeScanMode(final Context context) {
+  public Observable<Integer> observeScanMode() {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 
@@ -270,14 +268,12 @@ public class RxBluetooth {
   /**
    * Observes connection to specified profile. See also {@link BluetoothProfile.ServiceListener}.
    *
-   * @param context Context of the activity or an application
    * @param bluetoothProfile bluetooth profile to connect to. Can be either {@link
    * BluetoothProfile#HEALTH},{@link BluetoothProfile#HEADSET}, {@link BluetoothProfile#A2DP},
    * {@link BluetoothProfile#GATT} or {@link BluetoothProfile#GATT_SERVER}.
    * @return RxJava Observable with {@link ServiceEvent}
    */
-  public Observable<ServiceEvent> observeBluetoothProfile(final Context context,
-      final int bluetoothProfile) {
+  public Observable<ServiceEvent> observeBluetoothProfile(final int bluetoothProfile) {
     return Observable.create(new Observable.OnSubscribe<ServiceEvent>() {
       @Override public void call(final Subscriber<? super ServiceEvent> subscriber) {
         if (!mBluetoothAdapter.getProfileProxy(context, new BluetoothProfile.ServiceListener() {
