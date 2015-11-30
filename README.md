@@ -130,7 +130,10 @@ rxBluetooth.observeBluetoothProfile(myProfile)
           switch (serviceEvent.getState()) {
            case CONNECTED:
                 BluetoothProfile bluetoothProfile = serviceEvent.getBluetoothProfile();
-                //..
+                List<BluetoothDevice> devices = bluetoothProfile.getConnectedDevices();                        
+                for ( final BluetoothDevice dev : devices ) {
+                  //..
+                }
                 break;
            case DISCONNECTED:
                 //serviceEvent.getBluetoothProfile() returns null
