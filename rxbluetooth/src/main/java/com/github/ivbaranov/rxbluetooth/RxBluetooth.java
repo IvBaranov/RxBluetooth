@@ -19,12 +19,16 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.BluetoothServerSocket;
+import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Looper;
 import android.text.TextUtils;
+import java.io.IOException;
+import java.util.UUID;
 import rx.Observable;
 import rx.Scheduler;
 import rx.Subscriber;
@@ -304,6 +308,30 @@ public class RxBluetooth {
    */
   public void closeProfileProxy(int profile, BluetoothProfile proxy) {
     mBluetoothAdapter.closeProfileProxy(profile, proxy);
+  }
+
+  /**
+   * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket
+   * and returns a connected {@link BluetoothSocket} on successful connection.
+   *
+   * @param name service name for SDP record
+   * @param uuid uuid for SDP record
+   * @return observable with connected {@link BluetoothSocket} on successful connection
+   * @throws IOException
+   */
+  public Observable<BluetoothSocket> observeBluetoothSocket(final String name, final UUID uuid) {
+    return Observable.create(new Observable.OnSubscribe<BluetoothSocket>() {
+      @Override public void call(Subscriber<? super BluetoothSocket> subscriber) {
+        try {
+          BluetoothServerSocket bluetoothServerSocket =
+              mBluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
+          subscriber.onNext(bluetoothServerSocket.accept());
+          bluetoothServerSocket.close();
+        } catch (IOException e) {
+          subscriber.onError(e);
+        }
+      }
+    });
   }
 
   private Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
