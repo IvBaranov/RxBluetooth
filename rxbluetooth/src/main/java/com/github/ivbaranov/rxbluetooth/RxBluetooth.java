@@ -312,12 +312,12 @@ public class RxBluetooth {
 
   /**
    * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket
-   * and returns a connected {@link BluetoothSocket} on successful connection.
+   * and returns a connected {@link BluetoothSocket} on successful connection. Notifies observers
+   * with {@link IOException} {@code onError()}.
    *
    * @param name service name for SDP record
    * @param uuid uuid for SDP record
    * @return observable with connected {@link BluetoothSocket} on successful connection
-   * @throws IOException
    */
   public Observable<BluetoothSocket> observeBluetoothSocket(final String name, final UUID uuid) {
     return Observable.create(new Observable.OnSubscribe<BluetoothSocket>() {
