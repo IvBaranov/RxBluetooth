@@ -155,6 +155,7 @@ Download
 ```groovy
 compile 'com.github.ivbaranov:rxbluetooth:0.0.5'
 ```
+Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
 Contributing
 ------------
@@ -184,3 +185,5 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+[snapshots]: https://oss.sonatype.org/content/repositories/snapshots/
+ 
