@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Rxbluetooth : Android reactive bluetooth">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Rxbluetooth</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/IvBaranov/RxBluetooth">View on GitHub</a>
+
+          <h1 id="project_title">Rxbluetooth</h1>
+          <h2 id="project_tagline">Android reactive bluetooth</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/IvBaranov/RxBluetooth/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/IvBaranov/RxBluetooth/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="rxbluetooth" class="anchor" href="#rxbluetooth" aria-hidden="true"><span class="octicon octicon-link"></span></a>RxBluetooth</h1>
+
+<p><a href="https://travis-ci.org/IvBaranov/RxBluetooth"><img src="https://travis-ci.org/IvBaranov/RxBluetooth.svg" alt="Build Status"></a></p>
+
+<p>Android reactive bluetooth library. RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to contribute.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<ol>
+<li>
+<p>Declare permissions:</p>
+
+<div class="highlight highlight-text-xml"><pre>&lt;<span class="pl-ent">uses-permission</span> <span class="pl-e">android</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>android.permission.BLUETOOTH<span class="pl-pds">"</span></span> /&gt;
+&lt;<span class="pl-ent">uses-permission</span> <span class="pl-e">android</span><span class="pl-e">:</span><span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>android.permission.BLUETOOTH_ADMIN<span class="pl-pds">"</span></span> /&gt;</pre></div>
+</li>
+<li><p>Create <code>RxBluetooth</code> instance.</p></li>
+<li>
+<p>Check if bluetooth is currently enabled and ready for use:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-k">if</span>  (<span class="pl-k">!</span>rxBluetooth<span class="pl-k">.</span>isBluetoothAvailable()) {
+  <span class="pl-c">// to enable blutooth via startActivityForResult()</span>
+  rxBluetooth<span class="pl-k">.</span>enableBluetooth(<span class="pl-v">this</span>, <span class="pl-c1">REQUEST_ENABLE_BT</span>);
+}</pre></div>
+</li>
+<li><p>Have fun.</p></li>
+<li>
+<p>Make sure you are unsubscribing and stopping discovery <code>OnDestroy()</code>:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-k">if</span> (rxBluetooth <span class="pl-k">!=</span> <span class="pl-c1">null</span>) {
+     rxBluetooth<span class="pl-k">.</span>cancelDiscovery();
+   }
+unsubscribe(rxBluetoothSubscription);</pre></div>
+</li>
+</ol>
+
+<h5>
+<a id="observing-devices" class="anchor" href="#observing-devices" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing devices</h5>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDevices()
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">BluetoothDevice</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">BluetoothDevice</span> <span class="pl-v">bluetoothDevice</span>) {
+          <span class="pl-c">//</span>
+        }
+      });</pre></div>
+
+<h5>
+<a id="observing-discovery-state" class="anchor" href="#observing-discovery-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing discovery state</h5>
+
+<p>To observe just <code>ACTION_DISCOVERY_STARTED</code>:</p>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDiscovery()
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>ACTION_DISCOVERY_STARTED</span>))
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">String</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">String</span> <span class="pl-v">action</span>) {
+          <span class="pl-c">//</span>
+        }
+      });</pre></div>
+
+<p>To observe both <code>ACTION_DISCOVERY_STARTED</code> and <code>ACTION_DISCOVERY_FINISHED</code>:</p>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDiscovery()
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>ACTION_DISCOVERY_STARTED</span>, <span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>ACTION_DISCOVERY_FINISHED</span>))
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">String</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">String</span> <span class="pl-v">action</span>) {
+          <span class="pl-c">//</span>
+        }
+      });</pre></div>
+
+<h5>
+<a id="observing-bluetooth-state" class="anchor" href="#observing-bluetooth-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing bluetooth state</h5>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeBluetoothState()
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_ON</span>))
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Integer</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Integer</span> <span class="pl-v">integer</span>) {
+          <span class="pl-c">//</span>
+        }
+      });</pre></div>
+
+<p>You can observe single or multiple states:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_OFF</span>
+<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_TURNING_ON</span>
+<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_ON</span>
+<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_TURNING_OFF</span></pre></div>
+
+<h5>
+<a id="observing-scan-mode" class="anchor" href="#observing-scan-mode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing scan mode</h5>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeScanMode()
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_CONNECTABLE_DISCOVERABLE</span>))
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Integer</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Integer</span> <span class="pl-v">integer</span>) {
+          <span class="pl-c">//</span>
+        }
+      });</pre></div>
+
+<p>You can observe single or multiple scan modes:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_NONE</span>
+<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_CONNECTABLE</span>
+<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_CONNECTABLE_DISCOVERABLE</span></pre></div>
+
+<h4>
+<a id="getting-the-profile-proxy-object" class="anchor" href="#getting-the-profile-proxy-object" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting the profile proxy object</h4>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeBluetoothProfile(myProfile)
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">ServiceEvent</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">ServiceEvent</span> <span class="pl-v">serviceEvent</span>) {
+          <span class="pl-k">switch</span> (serviceEvent<span class="pl-k">.</span>getState()) {
+           <span class="pl-k">case</span> <span class="pl-c1">CONNECTED</span><span class="pl-k">:</span>
+                <span class="pl-smi">BluetoothProfile</span> bluetoothProfile <span class="pl-k">=</span> serviceEvent<span class="pl-k">.</span>getBluetoothProfile();
+                <span class="pl-k">List&lt;<span class="pl-smi">BluetoothDevice</span>&gt;</span> devices <span class="pl-k">=</span> bluetoothProfile<span class="pl-k">.</span>getConnectedDevices();                        
+                <span class="pl-k">for</span> ( <span class="pl-k">final</span> <span class="pl-smi">BluetoothDevice</span> dev <span class="pl-k">:</span> devices ) {
+                  <span class="pl-c">//..</span>
+                }
+                <span class="pl-k">break</span>;
+           <span class="pl-k">case</span> <span class="pl-c1">DISCONNECTED</span><span class="pl-k">:</span>
+                <span class="pl-c">//serviceEvent.getBluetoothProfile() returns null</span>
+                <span class="pl-k">break</span>;
+            }
+          }
+        });</pre></div>
+
+<p><code>myProfile</code> can be one of <code>BluetoothProfile.HEALTH</code>, <code>BluetoothProfile.HEADSET</code>, <code>BluetoothProfile.A2DP</code>, <code>BluetoothProfile.GATT</code> or <code>BluetoothProfile.GATT_SERVER</code></p>
+
+<p>Clients should close profile proxy when they are no longer using the proxy obtained from <code>observeBluetoothProfile</code>:</p>
+
+<div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>closeProfileProxy(<span class="pl-k">int</span> profile, <span class="pl-smi">BluetoothProfile</span> proxy);</pre></div>
+
+<h2>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h2>
+
+<div class="highlight highlight-source-groovy"><pre>compile <span class="pl-s"><span class="pl-pds">'</span>com.github.ivbaranov:rxbluetooth:0.0.5<span class="pl-pds">'</span></span></pre></div>
+
+<p>Snapshots of the development version are available in <a href="https://oss.sonatype.org/content/repositories/snapshots/">Sonatype's <code>snapshots</code> repository</a>.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Make sure you use SquareAndroid code style. (<a href="https://github.com/square/java-code-styles">https://github.com/square/java-code-styles</a>)</p>
+
+<p>Create a branch for each feature.</p>
+
+<h2>
+<a id="developed-by" class="anchor" href="#developed-by" aria-hidden="true"><span class="octicon octicon-link"></span></a>Developed By</h2>
+
+<p>Ivan Baranov</p>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<pre><code>Copyright 2015 Ivan Baranov
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Rxbluetooth maintained by <a href="https://github.com/IvBaranov">IvBaranov</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
