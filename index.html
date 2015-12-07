@@ -81,7 +81,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDevices()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
-      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>computation())
       .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">BluetoothDevice</span>&gt;</span>() {
         <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">BluetoothDevice</span> <span class="pl-v">bluetoothDevice</span>) {
           <span class="pl-c">//</span>
@@ -95,7 +95,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDiscovery()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
-      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>computation())
       .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>ACTION_DISCOVERY_STARTED</span>))
       .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">String</span>&gt;</span>() {
         <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">String</span> <span class="pl-v">action</span>) {
@@ -107,7 +107,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDiscovery()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
-      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>computation())
       .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>ACTION_DISCOVERY_STARTED</span>, <span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>ACTION_DISCOVERY_FINISHED</span>))
       .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">String</span>&gt;</span>() {
         <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">String</span> <span class="pl-v">action</span>) {
@@ -120,7 +120,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeBluetoothState()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
-      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>computation())
       .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_ON</span>))
       .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Integer</span>&gt;</span>() {
         <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Integer</span> <span class="pl-v">integer</span>) {
@@ -140,7 +140,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeScanMode()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
-      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>computation())
       .filter(<span class="pl-smi">Action</span><span class="pl-k">.</span>isEqualTo(<span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_CONNECTABLE_DISCOVERABLE</span>))
       .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Integer</span>&gt;</span>() {
         <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Integer</span> <span class="pl-v">integer</span>) {
@@ -159,7 +159,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeBluetoothProfile(myProfile)
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
-      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>computation())
       .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">ServiceEvent</span>&gt;</span>() {
         <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">ServiceEvent</span> <span class="pl-v">serviceEvent</span>) {
           <span class="pl-k">switch</span> (serviceEvent<span class="pl-k">.</span>getState()) {
