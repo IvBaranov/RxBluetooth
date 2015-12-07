@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     deviceSubscription = rxBluetooth.observeDevices()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.computation())
         .subscribe(new Action1<BluetoothDevice>() {
           @Override public void call(BluetoothDevice bluetoothDevice) {
             addDevice(bluetoothDevice);
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     discoveryStartSubscription = rxBluetooth.observeDiscovery()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.computation())
         .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
         .subscribe(new Action1<String>() {
           @Override public void call(String action) {
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     discoveryFinishSubscription = rxBluetooth.observeDiscovery()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.computation())
         .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
         .subscribe(new Action1<String>() {
           @Override public void call(String action) {
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     bluetoothStateOnSubscription = rxBluetooth.observeBluetoothState()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.computation())
         .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
         .subscribe(new Action1<Integer>() {
           @Override public void call(Integer integer) {
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
     bluetoothStateOtherSubscription = rxBluetooth.observeBluetoothState()
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribeOn(Schedulers.io())
+        .subscribeOn(Schedulers.computation())
         .filter(Action.isEqualTo(BluetoothAdapter.STATE_OFF, BluetoothAdapter.STATE_TURNING_OFF,
             BluetoothAdapter.STATE_TURNING_ON))
         .subscribe(new Action1<Integer>() {

@@ -44,7 +44,7 @@ Usage
 ```java
 rxBluetooth.observeDevices()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
+      .subscribeOn(Schedulers.computation())
       .subscribe(new Action1<BluetoothDevice>() {
         @Override public void call(BluetoothDevice bluetoothDevice) {
           //
@@ -59,7 +59,7 @@ To observe just `ACTION_DISCOVERY_STARTED`:
 ```java
 rxBluetooth.observeDiscovery()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
+      .subscribeOn(Schedulers.computation())
       .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
       .subscribe(new Action1<String>() {
         @Override public void call(String action) {
@@ -73,7 +73,7 @@ To observe both `ACTION_DISCOVERY_STARTED` and `ACTION_DISCOVERY_FINISHED`:
 ```java
 rxBluetooth.observeDiscovery()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
+      .subscribeOn(Schedulers.computation())
       .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
       .subscribe(new Action1<String>() {
         @Override public void call(String action) {
@@ -87,7 +87,7 @@ rxBluetooth.observeDiscovery()
 ```java
 rxBluetooth.observeBluetoothState()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
+      .subscribeOn(Schedulers.computation())
       .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
       .subscribe(new Action1<Integer>() {
         @Override public void call(Integer integer) {
@@ -109,7 +109,7 @@ BluetoothAdapter.STATE_TURNING_OFF
 ```java
 rxBluetooth.observeScanMode()
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
+      .subscribeOn(Schedulers.computation())
       .filter(Action.isEqualTo(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
       .subscribe(new Action1<Integer>() {
         @Override public void call(Integer integer) {
@@ -130,7 +130,7 @@ BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 ```java
 rxBluetooth.observeBluetoothProfile(myProfile)
       .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
+      .subscribeOn(Schedulers.computation())
       .subscribe(new Action1<ServiceEvent>() {
         @Override public void call(ServiceEvent serviceEvent) {
           switch (serviceEvent.getState()) {
