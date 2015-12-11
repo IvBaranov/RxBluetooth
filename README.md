@@ -3,7 +3,7 @@ RxBluetooth
 
 [![Build Status](https://travis-ci.org/IvBaranov/RxBluetooth.svg)](https://travis-ci.org/IvBaranov/RxBluetooth)
 
-Android reactive bluetooth library. RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to contribute.
+Android reactive bluetooth library. RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to [contribute](#contributing).
 
 Full documentation
 ------------------
@@ -163,7 +163,7 @@ compile 'com.github.ivbaranov:rxbluetooth:0.0.5'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
-Contributing
+<a name="contributing"></a>Contributing
 ------------
 Make sure you use SquareAndroid code style. (https://github.com/square/java-code-styles)
 
