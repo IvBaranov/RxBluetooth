@@ -8,7 +8,7 @@ Android reactive bluetooth library. RxBluetooth is in early-stage. There is a lo
 Full documentation
 ------------------
 
-* [Wiki](https://github.com/IvBaranov/RxBluetooth/wiki)
+* [Wiki](https://github.com/IvBaranov/RxBluetooth/wiki/Getting-started)
 * [Javadoc](http://ivbaranov.github.io/RxBluetooth/javadoc/)
 
 Usage
