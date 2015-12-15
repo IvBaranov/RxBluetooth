@@ -3,7 +3,9 @@ RxBluetooth
 
 [![Build Status](https://travis-ci.org/IvBaranov/RxBluetooth.svg)](https://travis-ci.org/IvBaranov/RxBluetooth)
 
-Android reactive bluetooth library. RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to [contribute](#contributing).
+Android reactive bluetooth library. Basically, RxBluetooth is just wrapper around android [BluetoothAdapter](http://developer.android.com/intl/ru/reference/android/bluetooth/BluetoothAdapter.html), so first of all the [Bluetooth](http://developer.android.com/intl/ru/guide/topics/connectivity/bluetooth.html) developer guide should be read.
+
+RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to [contribute](#contributing).
 
 Full documentation
 ------------------
