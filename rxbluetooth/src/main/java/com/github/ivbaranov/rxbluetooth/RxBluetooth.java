@@ -229,8 +229,7 @@ public class RxBluetooth {
     filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
     return Observable.defer(new Func0<Observable<Integer>>() {
-      @Override
-      public Observable<Integer> call() {
+      @Override public Observable<Integer> call() {
 
         return Observable.create(new Observable.OnSubscribe<Integer>() {
 
@@ -268,13 +267,11 @@ public class RxBluetooth {
     filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 
     return Observable.defer(new Func0<Observable<Integer>>() {
-      @Override
-      public Observable<Integer> call() {
+      @Override public Observable<Integer> call() {
 
         return Observable.create(new Observable.OnSubscribe<Integer>() {
 
-          @Override
-          public void call(final Subscriber<? super Integer> subscriber) {
+          @Override public void call(final Subscriber<? super Integer> subscriber) {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override
               public void onReceive(Context context, Intent intent) {
