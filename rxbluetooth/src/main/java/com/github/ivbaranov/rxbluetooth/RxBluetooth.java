@@ -153,11 +153,9 @@ public class RxBluetooth {
     return Observable.defer(new Func0<Observable<BluetoothDevice>>() {
 
       @Override public Observable<BluetoothDevice> call() {
-
         return Observable.create(new Observable.OnSubscribe<BluetoothDevice>() {
 
           @Override public void call(final Subscriber<? super BluetoothDevice> subscriber) {
-
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -192,22 +190,27 @@ public class RxBluetooth {
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
-    return Observable.create(new Observable.OnSubscribe<String>() {
+    return Observable.defer(new Func0<Observable<String>>() {
 
-      @Override public void call(final Subscriber<? super String> subscriber) {
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-          @Override public void onReceive(Context context, Intent intent) {
-            subscriber.onNext(intent.getAction());
+      @Override public Observable<String> call() {
+        return Observable.create(new Observable.OnSubscribe<String>() {
+
+          @Override public void call(final Subscriber<? super String> subscriber) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                subscriber.onNext(intent.getAction());
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
           }
-        };
-
-        context.registerReceiver(receiver, filter);
-
-        subscriber.add(unsubscribeInUiThread(new Action0() {
-          @Override public void call() {
-            context.unregisterReceiver(receiver);
-          }
-        }));
+        });
       }
     });
   }
