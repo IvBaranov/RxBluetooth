@@ -228,22 +228,29 @@ public class RxBluetooth {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
-    return Observable.create(new Observable.OnSubscribe<Integer>() {
+    return Observable.defer(new Func0<Observable<Integer>>() {
+      @Override
+      public Observable<Integer> call() {
 
-      @Override public void call(final Subscriber<? super Integer> subscriber) {
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-          @Override public void onReceive(Context context, Intent intent) {
-            subscriber.onNext(mBluetoothAdapter.getState());
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
+
+          @Override public void call(final Subscriber<? super Integer> subscriber) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                subscriber.onNext(mBluetoothAdapter.getState());
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
           }
-        };
+        });
 
-        context.registerReceiver(receiver, filter);
-
-        subscriber.add(unsubscribeInUiThread(new Action0() {
-          @Override public void call() {
-            context.unregisterReceiver(receiver);
-          }
-        }));
       }
     });
   }
@@ -262,9 +269,11 @@ public class RxBluetooth {
 
     return Observable.create(new Observable.OnSubscribe<Integer>() {
 
-      @Override public void call(final Subscriber<? super Integer> subscriber) {
+      @Override
+      public void call(final Subscriber<? super Integer> subscriber) {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
-          @Override public void onReceive(Context context, Intent intent) {
+          @Override
+          public void onReceive(Context context, Intent intent) {
             subscriber.onNext(mBluetoothAdapter.getScanMode());
           }
         };
@@ -272,7 +281,8 @@ public class RxBluetooth {
         context.registerReceiver(receiver, filter);
 
         subscriber.add(unsubscribeInUiThread(new Action0() {
-          @Override public void call() {
+          @Override
+          public void call() {
             context.unregisterReceiver(receiver);
           }
         }));
