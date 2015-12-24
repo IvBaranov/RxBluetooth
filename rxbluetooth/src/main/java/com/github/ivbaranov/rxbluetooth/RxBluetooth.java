@@ -35,6 +35,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
+import rx.functions.Func0;
 import rx.subscriptions.Subscriptions;
 
 /**
@@ -149,26 +150,33 @@ public class RxBluetooth {
   public Observable<BluetoothDevice> observeDevices() {
     final IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 
-    return Observable.create(new Observable.OnSubscribe<BluetoothDevice>() {
+    return Observable.defer(new Func0<Observable<BluetoothDevice>>() {
 
-      @Override public void call(final Subscriber<? super BluetoothDevice> subscriber) {
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-          @Override public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
-              BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-              subscriber.onNext(device);
-            }
+      @Override public Observable<BluetoothDevice> call() {
+
+        return Observable.create(new Observable.OnSubscribe<BluetoothDevice>() {
+
+          @Override public void call(final Subscriber<? super BluetoothDevice> subscriber) {
+
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                if (action.equals(BluetoothDevice.ACTION_FOUND)) {
+                  BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                  subscriber.onNext(device);
+                }
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
           }
-        };
-
-        context.registerReceiver(receiver, filter);
-
-        subscriber.add(unsubscribeInUiThread(new Action0() {
-          @Override public void call() {
-            context.unregisterReceiver(receiver);
-          }
-        }));
+        });
       }
     });
   }
