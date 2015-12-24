@@ -303,19 +303,23 @@ public class RxBluetooth {
    * @return RxJava Observable with {@link ServiceEvent}
    */
   public Observable<ServiceEvent> observeBluetoothProfile(final int bluetoothProfile) {
-    return Observable.create(new Observable.OnSubscribe<ServiceEvent>() {
-      @Override public void call(final Subscriber<? super ServiceEvent> subscriber) {
-        if (!mBluetoothAdapter.getProfileProxy(context, new BluetoothProfile.ServiceListener() {
-          @Override public void onServiceConnected(int profile, BluetoothProfile proxy) {
-            subscriber.onNext(new ServiceEvent(ServiceEvent.State.CONNECTED, profile, proxy));
-          }
+    return Observable.defer(new Func0<Observable<ServiceEvent>>() {
+      @Override public Observable<ServiceEvent> call() {
+        return Observable.create(new Observable.OnSubscribe<ServiceEvent>() {
+          @Override public void call(final Subscriber<? super ServiceEvent> subscriber) {
+            if (!mBluetoothAdapter.getProfileProxy(context, new BluetoothProfile.ServiceListener() {
+              @Override public void onServiceConnected(int profile, BluetoothProfile proxy) {
+                subscriber.onNext(new ServiceEvent(ServiceEvent.State.CONNECTED, profile, proxy));
+              }
 
-          @Override public void onServiceDisconnected(int profile) {
-            subscriber.onNext(new ServiceEvent(ServiceEvent.State.DISCONNECTED, profile, null));
+              @Override public void onServiceDisconnected(int profile) {
+                subscriber.onNext(new ServiceEvent(ServiceEvent.State.DISCONNECTED, profile, null));
+              }
+            }, bluetoothProfile)) {
+              subscriber.onError(new GetProfileProxyException());
+            }
           }
-        }, bluetoothProfile)) {
-          subscriber.onError(new GetProfileProxyException());
-        }
+        });
       }
     });
   }
