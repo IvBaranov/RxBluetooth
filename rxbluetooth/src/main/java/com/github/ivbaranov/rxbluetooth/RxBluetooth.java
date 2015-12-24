@@ -267,25 +267,32 @@ public class RxBluetooth {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 
-    return Observable.create(new Observable.OnSubscribe<Integer>() {
-
+    return Observable.defer(new Func0<Observable<Integer>>() {
       @Override
-      public void call(final Subscriber<? super Integer> subscriber) {
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-          @Override
-          public void onReceive(Context context, Intent intent) {
-            subscriber.onNext(mBluetoothAdapter.getScanMode());
-          }
-        };
+      public Observable<Integer> call() {
 
-        context.registerReceiver(receiver, filter);
+        return Observable.create(new Observable.OnSubscribe<Integer>() {
 
-        subscriber.add(unsubscribeInUiThread(new Action0() {
           @Override
-          public void call() {
-            context.unregisterReceiver(receiver);
+          public void call(final Subscriber<? super Integer> subscriber) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override
+              public void onReceive(Context context, Intent intent) {
+                subscriber.onNext(mBluetoothAdapter.getScanMode());
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override
+              public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
           }
-        }));
+        });
+
       }
     });
   }
