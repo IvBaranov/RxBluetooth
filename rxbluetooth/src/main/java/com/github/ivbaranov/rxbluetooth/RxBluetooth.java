@@ -349,16 +349,20 @@ public class RxBluetooth {
    * @return observable with connected {@link BluetoothSocket} on successful connection
    */
   public Observable<BluetoothSocket> observeBluetoothSocket(final String name, final UUID uuid) {
-    return Observable.create(new Observable.OnSubscribe<BluetoothSocket>() {
-      @Override public void call(Subscriber<? super BluetoothSocket> subscriber) {
-        try {
-          BluetoothServerSocket bluetoothServerSocket =
-              mBluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
-          subscriber.onNext(bluetoothServerSocket.accept());
-          bluetoothServerSocket.close();
-        } catch (IOException e) {
-          subscriber.onError(e);
-        }
+    return Observable.defer(new Func0<Observable<BluetoothSocket>>() {
+      @Override public Observable<BluetoothSocket> call() {
+        return Observable.create(new Observable.OnSubscribe<BluetoothSocket>() {
+          @Override public void call(Subscriber<? super BluetoothSocket> subscriber) {
+            try {
+              BluetoothServerSocket bluetoothServerSocket =
+                      mBluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
+              subscriber.onNext(bluetoothServerSocket.accept());
+              bluetoothServerSocket.close();
+            } catch (IOException e) {
+              subscriber.onError(e);
+            }
+          }
+        });
       }
     });
   }
