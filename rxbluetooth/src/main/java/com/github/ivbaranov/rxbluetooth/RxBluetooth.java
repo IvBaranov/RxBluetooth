@@ -367,6 +367,32 @@ public class RxBluetooth {
     });
   }
 
+  /**
+   * Create connection to {@link BluetoothDevice} and returns a connected {@link BluetoothSocket}
+   * on successful connection. Notifies observers with {@link IOException} {@code onError()}.
+   *
+   * @param bluetoothDevice bluetooth device to connect
+   * @param uuid uuid for SDP record
+   * @return observable with connected {@link BluetoothSocket} on successful connection
+   */
+  public Observable<BluetoothSocket> observeConnectDevice(final BluetoothDevice bluetoothDevice, final UUID uuid) {
+    return Observable.defer(new Func0<Observable<BluetoothSocket>>() {
+      @Override public Observable<BluetoothSocket> call() {
+        return Observable.create(new Observable.OnSubscribe<BluetoothSocket>() {
+          @Override public void call(Subscriber<? super BluetoothSocket> subscriber) {
+            try {
+              BluetoothSocket bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+              bluetoothSocket.connect();
+              subscriber.onNext(bluetoothSocket);
+            } catch (IOException e) {
+              subscriber.onError(e);
+            }
+          }
+        });
+      }
+    });
+  }
+
   private Subscription unsubscribeInUiThread(final Action0 unsubscribe) {
     return Subscriptions.create(new Action0() {
 
