@@ -249,7 +249,6 @@ public class RxBluetooth {
             }));
           }
         });
-
       }
     });
   }
@@ -273,8 +272,7 @@ public class RxBluetooth {
 
           @Override public void call(final Subscriber<? super Integer> subscriber) {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
-              @Override
-              public void onReceive(Context context, Intent intent) {
+              @Override public void onReceive(Context context, Intent intent) {
                 subscriber.onNext(mBluetoothAdapter.getScanMode());
               }
             };
@@ -282,14 +280,12 @@ public class RxBluetooth {
             context.registerReceiver(receiver, filter);
 
             subscriber.add(unsubscribeInUiThread(new Action0() {
-              @Override
-              public void call() {
+              @Override public void call() {
                 context.unregisterReceiver(receiver);
               }
             }));
           }
         });
-
       }
     });
   }
@@ -355,7 +351,7 @@ public class RxBluetooth {
           @Override public void call(Subscriber<? super BluetoothSocket> subscriber) {
             try {
               BluetoothServerSocket bluetoothServerSocket =
-                      mBluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
+                  mBluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
               subscriber.onNext(bluetoothServerSocket.accept());
               bluetoothServerSocket.close();
             } catch (IOException e) {
@@ -375,13 +371,15 @@ public class RxBluetooth {
    * @param uuid uuid for SDP record
    * @return observable with connected {@link BluetoothSocket} on successful connection
    */
-  public Observable<BluetoothSocket> observeConnectDevice(final BluetoothDevice bluetoothDevice, final UUID uuid) {
+  public Observable<BluetoothSocket> observeConnectDevice(final BluetoothDevice bluetoothDevice,
+      final UUID uuid) {
     return Observable.defer(new Func0<Observable<BluetoothSocket>>() {
       @Override public Observable<BluetoothSocket> call() {
         return Observable.create(new Observable.OnSubscribe<BluetoothSocket>() {
           @Override public void call(Subscriber<? super BluetoothSocket> subscriber) {
             try {
-              BluetoothSocket bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+              BluetoothSocket bluetoothSocket =
+                  bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
               bluetoothSocket.connect();
               subscriber.onNext(bluetoothSocket);
             } catch (IOException e) {
