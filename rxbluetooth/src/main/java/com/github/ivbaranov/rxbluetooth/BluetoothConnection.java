@@ -226,6 +226,8 @@ public class BluetoothConnection {
    */
   public void closeConnection() {
     try {
+      connected = false;
+
       if (inputStream != null) {
         inputStream.close();
       }
