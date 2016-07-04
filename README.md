@@ -68,10 +68,10 @@ rxBluetooth.observeConnectDevice(bluetoothDevice, uuid)
           // Connected to the device, do anything with the socket 
         }
       }, new Action1<Throwable>() {
- +      @Override public void call(Throwable throwable) {
- +        // Error occured
- +      }
- +    });
+       @Override public void call(Throwable throwable) {
+         // Error occured
+       }
+     });
 ```
 
 ##### Observing discovery state
@@ -179,7 +179,7 @@ rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
 ```
 
 ##### Read and Write with BluetoothSocket
-After create a connection to the device, you can use `BluetoothConnection` class to read and write with its socket.
+After creating a connection to the device, you can use `BluetoothConnection` class to read and write with its socket.
 
 **Read:**
 ```java
