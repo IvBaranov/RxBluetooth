@@ -179,7 +179,7 @@ public class BluetoothConnection {
    * Send one byte to bluetooth output stream.
    *
    * @param oneByte a byte
-   * @@return true if success, false if there was error occurred or disconnected
+   * @return true if success, false if there was error occurred or disconnected
    */
   public boolean send(byte oneByte) {
     return send(new byte[] { oneByte });
@@ -189,7 +189,7 @@ public class BluetoothConnection {
    * Send array of bytes to bluetooth output stream.
    *
    * @param bytes data to send
-   * @@return true if success, false if there was error occurred or disconnected
+   * @return true if success, false if there was error occurred or disconnected
    */
   public boolean send(byte[] bytes) {
     if (!connected) return false;
@@ -214,7 +214,7 @@ public class BluetoothConnection {
    * Send string of text to bluetooth output stream.
    *
    * @param text text to send
-   * @@return true if success, false if there was error occurred or disconnected
+   * @return true if success, false if there was error occurred or disconnected
    */
   public boolean send(String text) {
     byte[] sBytes = text.getBytes();
