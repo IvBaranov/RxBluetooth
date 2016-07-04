@@ -329,7 +329,8 @@ public class RxBluetooth {
    * {@link BluetoothProfile#A2DP}, {@link BluetoothProfile#GATT} or {@link
    * BluetoothProfile#GATT_SERVER}.
    *
-   * @param proxy Profile proxy object
+   * @param profile the Bluetooth profile
+   * @param proxy profile proxy object
    */
   public void closeProfileProxy(int profile, BluetoothProfile proxy) {
     mBluetoothAdapter.closeProfileProxy(profile, proxy);
