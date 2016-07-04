@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <h1>
-<a id="rxbluetooth" class="anchor" href="#rxbluetooth" aria-hidden="true"><span class="octicon octicon-link"></span></a>RxBluetooth</h1>
+<a id="rxbluetooth" class="anchor" href="#rxbluetooth" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>RxBluetooth</h1>
 
 <p><a href="https://travis-ci.org/IvBaranov/RxBluetooth"><img src="https://travis-ci.org/IvBaranov/RxBluetooth.svg" alt="Build Status"></a></p>
 
@@ -29,7 +29,7 @@
 <p>RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to <a href="#contributing">contribute</a>.</p>
 
 <h2>
-<a id="full-documentation" class="anchor" href="#full-documentation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Full documentation</h2>
+<a id="full-documentation" class="anchor" href="#full-documentation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Full documentation</h2>
 
 <ul>
 <li><a href="https://github.com/IvBaranov/RxBluetooth/wiki/Getting-started">Wiki</a></li>
@@ -37,7 +37,7 @@
 </ul>
 
 <h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
 <ol>
 <li>
@@ -67,7 +67,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 </ol>
 
 <h5>
-<a id="observing-devices" class="anchor" href="#observing-devices" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing devices</h5>
+<a id="observing-devices" class="anchor" href="#observing-devices" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Observing devices</h5>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeDevices()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
@@ -79,7 +79,27 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
       });</pre></div>
 
 <h5>
-<a id="observing-discovery-state" class="anchor" href="#observing-discovery-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing discovery state</h5>
+<a id="create-connection-to-device" class="anchor" href="#create-connection-to-device" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Create connection to device</h5>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-c">// Use 00001101-0000-1000-8000-00805F9B34FB for SPP service </span>
+<span class="pl-c">// (ex. Arduino) or use your own generated UUID.</span>
+<span class="pl-smi">UUID</span> uuid <span class="pl-k">=</span> <span class="pl-c1">UUID</span><span class="pl-k">.</span>fromString(<span class="pl-s"><span class="pl-pds">"</span>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx<span class="pl-pds">"</span></span>);
+
+rxBluetooth<span class="pl-k">.</span>observeConnectDevice(bluetoothDevice, uuid)
+      .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+      .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+      .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">BluetoothSocket</span>&gt;</span>() {
+        <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">BluetoothSocket</span> <span class="pl-v">socket</span>) {
+          <span class="pl-c">// Connected to the device, do anything with the socket </span>
+        }
+      }, <span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Throwable</span>&gt;</span>() {
+       <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Throwable</span> <span class="pl-v">throwable</span>) {
+         <span class="pl-c">// Error occured</span>
+       }
+     });</pre></div>
+
+<h5>
+<a id="observing-discovery-state" class="anchor" href="#observing-discovery-state" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Observing discovery state</h5>
 
 <p>To observe just <code>ACTION_DISCOVERY_STARTED</code>:</p>
 
@@ -106,7 +126,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
       });</pre></div>
 
 <h5>
-<a id="observing-bluetooth-state" class="anchor" href="#observing-bluetooth-state" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing bluetooth state</h5>
+<a id="observing-bluetooth-state" class="anchor" href="#observing-bluetooth-state" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Observing bluetooth state</h5>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeBluetoothState()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
@@ -126,7 +146,7 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 <span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>STATE_TURNING_OFF</span></pre></div>
 
 <h5>
-<a id="observing-scan-mode" class="anchor" href="#observing-scan-mode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observing scan mode</h5>
+<a id="observing-scan-mode" class="anchor" href="#observing-scan-mode" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Observing scan mode</h5>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeScanMode()
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
@@ -144,8 +164,8 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 <span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_CONNECTABLE</span>
 <span class="pl-smi">BluetoothAdapter</span><span class="pl-c1"><span class="pl-k">.</span>SCAN_MODE_CONNECTABLE_DISCOVERABLE</span></pre></div>
 
-<h4>
-<a id="getting-the-profile-proxy-object" class="anchor" href="#getting-the-profile-proxy-object" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting the profile proxy object</h4>
+<h5>
+<a id="getting-the-profile-proxy-object" class="anchor" href="#getting-the-profile-proxy-object" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting the profile proxy object</h5>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>observeBluetoothProfile(myProfile)
       .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
@@ -173,27 +193,71 @@ unsubscribe(rxBluetoothSubscription);</pre></div>
 
 <div class="highlight highlight-source-java"><pre>rxBluetooth<span class="pl-k">.</span>closeProfileProxy(<span class="pl-k">int</span> profile, <span class="pl-smi">BluetoothProfile</span> proxy);</pre></div>
 
-<h2>
-<a id="download" class="anchor" href="#download" aria-hidden="true"><span class="octicon octicon-link"></span></a>Download</h2>
+<h4>
+<a id="read-and-write-with-bluetoothsocket" class="anchor" href="#read-and-write-with-bluetoothsocket" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Read and Write with BluetoothSocket</h4>
 
-<div class="highlight highlight-source-groovy"><pre>compile <span class="pl-s"><span class="pl-pds">'</span>com.github.ivbaranov:rxbluetooth:0.0.5<span class="pl-pds">'</span></span></pre></div>
+<p>After creating a connection to the device, you can use <code>BluetoothConnection</code> class to read and write with its socket.</p>
+
+<h5>
+<a id="read" class="anchor" href="#read" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Read:</h5>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-smi">BluetoothConnection</span> bluetoothConnection <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">BluetoothConnection</span>(bluetoothSocket);
+
+<span class="pl-c">// Observe every byte received</span>
+bluetoothConnection<span class="pl-k">.</span>observeByteStream()
+    .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+    .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+    .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Byte</span>&gt;</span>() {
+      <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Byte</span> <span class="pl-v">aByte</span>) {
+        <span class="pl-c">// This will be called every single byte received</span>
+      }
+    }, <span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Throwable</span>&gt;</span>() {
+      <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Throwable</span> <span class="pl-v">throwable</span>) {
+        <span class="pl-c">// Error occured</span>
+      }
+    });
+
+<span class="pl-c">// Or just observe string</span>
+bluetoothConnection<span class="pl-k">.</span>observeStringStream()
+    .observeOn(<span class="pl-smi">AndroidSchedulers</span><span class="pl-k">.</span>mainThread())
+    .subscribeOn(<span class="pl-smi">Schedulers</span><span class="pl-k">.</span>io())
+    .subscribe(<span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">String</span>&gt;</span>() {
+      <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">String</span> <span class="pl-v">string</span>) {
+        <span class="pl-c">// This will be called every string received</span>
+      }
+    }, <span class="pl-k">new</span> <span class="pl-k">Action1&lt;<span class="pl-smi">Throwable</span>&gt;</span>() {
+      <span class="pl-k">@Override</span> <span class="pl-k">public</span> <span class="pl-k">void</span> <span class="pl-en">call</span>(<span class="pl-smi">Throwable</span> <span class="pl-v">throwable</span>) {
+        <span class="pl-c">// Error occured</span>
+      }
+    });</pre></div>
+
+<h5>
+<a id="write" class="anchor" href="#write" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Write:</h5>
+
+<div class="highlight highlight-source-java"><pre>bluetoothConnection<span class="pl-k">.</span>send(<span class="pl-s"><span class="pl-pds">"</span>Hello<span class="pl-pds">"</span></span>); <span class="pl-c">// String</span>
+bluetoothConnection<span class="pl-k">.</span>send(<span class="pl-s"><span class="pl-pds">"</span>There<span class="pl-pds">"</span></span><span class="pl-k">.</span>getBytes()); <span class="pl-c">// Array of bytes</span></pre></div>
+
+<h2>
+<a id="download" class="anchor" href="#download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download</h2>
+
+<div class="highlight highlight-source-groovy"><pre>compile <span class="pl-s"><span class="pl-pds">'</span>com.github.ivbaranov:rxbluetooth:0.1.0<span class="pl-pds">'</span></span></pre></div>
 
 <p>Snapshots of the development version are available in <a href="https://oss.sonatype.org/content/repositories/snapshots/">Sonatype's <code>snapshots</code> repository</a>.</p>
 
 <h2>
-<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a><a name="contributing"></a>Contributing</h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a><a name="contributing"></a>Contributing</h2>
 
 <p>Make sure you use SquareAndroid code style. (<a href="https://github.com/square/java-code-styles">https://github.com/square/java-code-styles</a>)</p>
 
 <p>Create a branch for each feature.</p>
 
 <h2>
-<a id="developed-by" class="anchor" href="#developed-by" aria-hidden="true"><span class="octicon octicon-link"></span></a>Developed By</h2>
+<a id="developed-by" class="anchor" href="#developed-by" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Developed By</h2>
 
 <p>Ivan Baranov</p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <pre><code>Copyright 2015 Ivan Baranov
 
