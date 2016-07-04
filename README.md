@@ -54,6 +54,22 @@ rxBluetooth.observeDevices()
       });
 ```
 
+##### Create connection to device
+```java
+// Use 00001101-0000-1000-8000-00805F9B34FB for SPP service 
+// (ex. Arduino) or use your own generated UUID.
+UUID uuid = UUID.fromString("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
+
+rxBluetooth.observeConnectDevice(bluetoothDevice, uuid)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.io())
+      .subscribe(new Action1<BluetoothSocket>() {
+        @Override public void call(BluetoothSocket socket) {
+          // Connected to the device, do anything with the socket 
+        }
+      });
+```
+
 ##### Observing discovery state
 
 To observe just `ACTION_DISCOVERY_STARTED`:
@@ -156,6 +172,48 @@ rxBluetooth.observeBluetoothProfile(myProfile)
 Clients should close profile proxy when they are no longer using the proxy obtained from `observeBluetoothProfile`:
 ```java
 rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
+```
+
+##### Read and Write with BluetoothSocket
+After create a connection to the device, you can use `BluetoothConnection` class to read and write with its socket.
+
+**Read:**
+```java
+BluetoothConnection bluetoothConnection = new BluetoothConnection(bluetoothSocket);
+
+// Observe every byte received
+bluetoothConnection.observeByteStream()
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.io())
+    .subscribe(new Action1<Byte>() {
+      @Override public void call(Byte aByte) {
+        // This will be called every single byte received
+      }
+    }, new Action1<Throwable>() {
+      @Override public void call(Throwable throwable) {
+        // Error occured
+      }
+    });
+
+// Or just observe string
+bluetoothConnection.observeStringStream()
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.io())
+    .subscribe(new Action1<String>() {
+      @Override public void call(String string) {
+        // This will be called every string received
+      }
+    }, new Action1<Throwable>() {
+      @Override public void call(Throwable throwable) {
+        // Error occured
+      }
+    });
+```
+
+**Write:**
+```java
+bluetoothConnection.send("Hello"); // String
+bluetoothConnection.send("There".getBytes()); // Array of bytes
 ```
 
 Download
