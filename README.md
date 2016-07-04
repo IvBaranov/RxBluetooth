@@ -147,7 +147,7 @@ BluetoothAdapter.SCAN_MODE_CONNECTABLE
 BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 ```
 
-#### Getting the profile proxy object
+##### Getting the profile proxy object
 
 ```java
 rxBluetooth.observeBluetoothProfile(myProfile)
@@ -178,10 +178,10 @@ Clients should close profile proxy when they are no longer using the proxy obtai
 rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
 ```
 
-##### Read and Write with BluetoothSocket
+#### Read and Write with BluetoothSocket
 After creating a connection to the device, you can use `BluetoothConnection` class to read and write with its socket.
 
-**Read:**
+##### Read:
 ```java
 BluetoothConnection bluetoothConnection = new BluetoothConnection(bluetoothSocket);
 
@@ -214,7 +214,7 @@ bluetoothConnection.observeStringStream()
     });
 ```
 
-**Write:**
+##### Write:
 ```java
 bluetoothConnection.send("Hello"); // String
 bluetoothConnection.send("There".getBytes()); // Array of bytes
