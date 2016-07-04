@@ -67,7 +67,11 @@ rxBluetooth.observeConnectDevice(bluetoothDevice, uuid)
         @Override public void call(BluetoothSocket socket) {
           // Connected to the device, do anything with the socket 
         }
-      });
+      }, new Action1<Throwable>() {
+ +      @Override public void call(Throwable throwable) {
+ +        // Error occured
+ +      }
+ +    });
 ```
 
 ##### Observing discovery state
