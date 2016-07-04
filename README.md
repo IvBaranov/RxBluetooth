@@ -223,7 +223,7 @@ bluetoothConnection.send("There".getBytes()); // Array of bytes
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:0.0.5'
+compile 'com.github.ivbaranov:rxbluetooth:0.1.0'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
