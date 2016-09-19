@@ -28,6 +28,7 @@ import android.content.IntentFilter;
 import android.os.Looper;
 import android.text.TextUtils;
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 import rx.Observable;
 import rx.Scheduler;
@@ -84,6 +85,21 @@ public class RxBluetooth {
       Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
       activity.startActivityForResult(enableBtIntent, requestCode);
     }
+  }
+
+  /**
+   * Return the set of {@link BluetoothDevice} objects that are bonded
+   * (paired) to the local adapter.
+   * <p>If Bluetooth state is not {@link BluetoothAdapter#STATE_ON}, this API
+   * will return an empty set. After turning on Bluetooth,
+   * wait for {@link BluetoothAdapter#ACTION_STATE_CHANGED} with {@link BluetoothAdapter#STATE_ON}
+   * to get the updated value.
+   * <p>Requires {@link android.Manifest.permission#BLUETOOTH}.
+   *
+   * @return unmodifiable set of {@link BluetoothDevice}, or null on error
+   */
+  public Set<BluetoothDevice> getBondedDevices() {
+    return mBluetoothAdapter.getBondedDevices();
   }
 
   /**
