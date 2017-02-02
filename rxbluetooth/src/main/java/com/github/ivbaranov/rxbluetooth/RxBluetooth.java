@@ -353,6 +353,44 @@ public class RxBluetooth {
   }
 
   /**
+   * Observes connection state of devices.
+   *
+   * @return RxJava Observable with {@link ConnectionStateEvent}
+   */
+  public Observable<ConnectionStateEvent> observeConnectionState() {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+
+    return Observable.defer(new Func0<Observable<ConnectionStateEvent>>() {
+      @Override public Observable<ConnectionStateEvent> call() {
+
+        return Observable.create(new Observable.OnSubscribe<ConnectionStateEvent>() {
+
+          @Override public void call(final Subscriber<? super ConnectionStateEvent> subscriber) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                int status = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.STATE_DISCONNECTED);
+                int previousStatus = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_CONNECTION_STATE, BluetoothAdapter.STATE_DISCONNECTED);
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                subscriber.onNext(new ConnectionStateEvent(status, previousStatus, device));
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
+          }
+        });
+      }
+    });
+  }
+
+  /**
    * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket
    * and returns a connected {@link BluetoothSocket} on successful connection. Notifies observers
    * with {@link IOException} {@code onError()}.
