@@ -59,6 +59,7 @@ public class ConnectionStateEvent {
     ConnectionStateEvent that = (ConnectionStateEvent) o;
 
     if (mState != that.mState) return false;
+    if (mPreviousState != that.mPreviousState) return false;
     return !(mBluetoothDevice != null ? !mBluetoothDevice.equals(that.mBluetoothDevice)
         : that.mBluetoothDevice != null);
   }
