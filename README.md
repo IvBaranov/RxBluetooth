@@ -178,6 +178,42 @@ Clients should close profile proxy when they are no longer using the proxy obtai
 rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
 ```
 
+##### Observing device state
+
+To observe the current device state, you can receive the `ConnectionStateEvent` which provides the state, previous state, and `BluetoothDevice`.
+
+```java
+rxBluetooth.observeConnectionState()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.computation())
+      .subscribe(new Action1<ConnectionStateEvent>() {
+        @Override public void call(ConnectionStateEvent event) {
+          switch (event.getState()) {
+            case BluetoothAdapter.STATE_DISCONNECTED:
+                // device disconnected
+                break;
+            case BluetoothAdapter.STATE_CONNECTING:
+                // device connecting
+                break;
+            case BluetoothAdapter.STATE_CONNECTED:
+                // device connected
+                break;
+            case BluetoothAdapter.STATE_DISCONNECTING:
+                // device disconnecting
+                break;
+          }
+        }
+      });
+```
+
+Possible states are:
+```java
+BluetoothAdapter.STATE_DISCONNECTED
+BluetoothAdapter.STATE_CONNECTING
+BluetoothAdapter.STATE_CONNECTED
+BluetoothAdapter.STATE_DISCONNECTING
+```
+
 #### Read and Write with BluetoothSocket
 After creating a connection to the device, you can use `BluetoothConnection` class to read and write with its socket.
 
