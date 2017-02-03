@@ -45,7 +45,7 @@ public class ConnectionStateEvent {
   }
 
   public int getPreviousState() {
-    return mState;
+    return mPreviousState;
   }
 
   public BluetoothDevice getBluetoothDevice() {
