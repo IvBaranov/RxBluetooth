@@ -214,6 +214,38 @@ BluetoothAdapter.STATE_CONNECTED
 BluetoothAdapter.STATE_DISCONNECTING
 ```
 
+##### Observing device bond state
+
+To observe the bond state of devices, you can receive the `BondStateEvent` which provides the state, previous state, and `BluetoothDevice`.
+
+```java
+rxBluetooth.observeBondState()
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribeOn(Schedulers.computation())
+      .subscribe(new Action1<BondStateEvent>() {
+        @Override public void call(BondStateEvent event) {
+          switch (event.getState()) {
+            case BluetoothDevice.BOND_NONE:
+                // device unbonded
+                break;
+            case BluetoothDevice.BOND_BONDING:
+                // device bonding
+                break;
+            case BluetoothDevice.BOND_BONDED:
+                // device bonded
+                break;
+          }
+        }
+      });
+```
+
+Possible states are:
+```java
+BluetoothDevice.BOND_NONE
+BluetoothDevice.BOND_BONDING
+BluetoothDevice.BOND_BONDED
+```
+
 #### Read and Write with BluetoothSocket
 After creating a connection to the device, you can use `BluetoothConnection` class to read and write with its socket.
 

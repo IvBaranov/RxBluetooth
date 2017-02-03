@@ -391,6 +391,44 @@ public class RxBluetooth {
   }
 
   /**
+   * Observes bond state of devices.
+   *
+   * @return RxJava Observable with {@link BondStateEvent}
+   */
+  public Observable<BondStateEvent> observeBondState() {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
+    return Observable.defer(new Func0<Observable<BondStateEvent>>() {
+      @Override public Observable<BondStateEvent> call() {
+
+        return Observable.create(new Observable.OnSubscribe<BondStateEvent>() {
+
+          @Override public void call(final Subscriber<? super BondStateEvent> subscriber) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE);
+                int previousState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.BOND_NONE);
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                subscriber.onNext(new BondStateEvent(state, previousState, device));
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
+          }
+        });
+      }
+    });
+  }
+
+  /**
    * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket
    * and returns a connected {@link BluetoothSocket} on successful connection. Notifies observers
    * with {@link IOException} {@code onError()}.
