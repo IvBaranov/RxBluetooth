@@ -24,11 +24,19 @@ Usage
 
 2. Create `RxBluetooth` instance.
 
-3. Check if bluetooth is currently enabled and ready for use:
+3. Check it:
    ```java
+   // check if bluetooth is supported on your hardware
    if  (!rxBluetooth.isBluetoothAvailable()) {
-      // to enable blutooth via startActivityForResult()
-      rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
+      // handle the lack of bluetooth support
+   } else {
+      // check if bluetooth is currently enabled and ready for use
+      if (!rxBluetooth.isBluetoothEnabled()) { 
+         // to enable blutooth via startActivityForResult()
+         rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
+      } else {
+         // you are ready
+      }
    }
    ```
 
