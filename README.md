@@ -23,6 +23,9 @@ Usage
    ```
 
 2. Create `RxBluetooth` instance.
+   ```java
+   RxBluetooth rxBluetooth = new RxBluetooth(this); // `this` is a context
+   ```
 
 3. Check it:
    ```java
@@ -41,7 +44,7 @@ Usage
    ```
 
 4. Have fun.
-5. Make sure you are unsubscribing and stopping discovery `OnDestroy()`:
+5. Make sure you are unsubscribing and stopping discovery in `OnDestroy()`:
 
    ```java
    if (rxBluetooth != null) {
