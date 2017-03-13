@@ -20,11 +20,35 @@ Usage
    ```xml
    <uses-permission android:name="android.permission.BLUETOOTH" />
    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+   // If you intend to run on devices with android 6.0+ you also need to declare:
+   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    ```
 
 2. Create `RxBluetooth` instance.
+   ```java
+   RxBluetooth rxBluetooth = new RxBluetooth(this); // `this` is a context
+   ```
+3. For android 6.0+ you need location permision.
+   ```java
+   if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+   }
+   // And catch the result like this:
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_COARSE_LOCATION) {
+            for (String permission : permissions) {
+                if (android.Manifest.permission.ACCESS_FINE_LOCATION.equals(permission)) {
+                    // Do stuff if permission granted
+                }
+            }
+        }
+    }
+   ```
 
-3. Check it:
+4. Check that bluetooth is availible and enabled:
    ```java
    // check if bluetooth is supported on your hardware
    if  (!rxBluetooth.isBluetoothAvailable()) {
@@ -40,8 +64,8 @@ Usage
    }
    ```
 
-4. Have fun.
-5. Make sure you are unsubscribing and stopping discovery `OnDestroy()`:
+5. Have fun.
+6. Make sure you are unsubscribing and stopping discovery in `OnDestroy()`:
 
    ```java
    if (rxBluetooth != null) {
