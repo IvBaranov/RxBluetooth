@@ -6,9 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
+
 import com.github.ivbaranov.rxbluetooth.RxBluetooth;
 import com.github.ivbaranov.rxbluetooth.Action;
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
   private Subscription discoveryFinishSubscription;
   private Subscription bluetoothStateOnSubscription;
   private Subscription bluetoothStateOtherSubscription;
-  private List<String> devices = new ArrayList<>();
+  private List<BluetoothDevice> devices = new ArrayList<>();
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -123,19 +126,32 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void addDevice(BluetoothDevice device) {
-    String deviceName;
-    deviceName = device.getAddress();
-    if (!TextUtils.isEmpty(device.getName())) {
-      deviceName += " " + device.getName();
-    }
-    devices.add(deviceName);
-
+    devices.add(device);
     setAdapter(devices);
   }
 
-  private void setAdapter(List<String> list) {
+  private void setAdapter(List<BluetoothDevice> list) {
     int itemLayoutId = android.R.layout.simple_list_item_1;
-    result.setAdapter(new ArrayAdapter<>(this, itemLayoutId, list));
+    result.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
+      @Override
+      public View getView(int position, View convertView, ViewGroup parent) {
+        View view = super.getView(position, convertView, parent);
+
+        BluetoothDevice device = devices.get(position);
+        String devName = device.getName();
+        String devAddress = device.getAddress();
+
+        if (TextUtils.isEmpty(devName)) {
+          devName = "NO NAME";
+        }
+        TextView text1 = (TextView) view.findViewById(android.R.id.text1);
+        TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+
+        text1.setText(devName);
+        text2.setText(devAddress);
+        return view;
+      }
+    });
   }
 
   private static void unsubscribe(Subscription subscription) {
