@@ -56,7 +56,7 @@ Usage
    } else {
       // check if bluetooth is currently enabled and ready for use
       if (!rxBluetooth.isBluetoothEnabled()) { 
-         // to enable blutooth via startActivityForResult()
+         // to enable bluetooth via startActivityForResult()
          rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
       } else {
          // you are ready
