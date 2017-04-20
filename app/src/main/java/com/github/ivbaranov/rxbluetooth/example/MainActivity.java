@@ -2,14 +2,18 @@ package com.github.ivbaranov.rxbluetooth.example;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 import com.github.ivbaranov.rxbluetooth.Action;
 import com.github.ivbaranov.rxbluetooth.RxBluetooth;
 import java.util.ArrayList;
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
   private Button start;
   private Button stop;
   private ListView result;
+  private Toolbar toolbar;
   private RxBluetooth rxBluetooth;
   private Subscription deviceSubscription;
   private Subscription discoveryStartSubscription;
@@ -33,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
   private Subscription bluetoothStateOnSubscription;
   private Subscription bluetoothStateOtherSubscription;
   private List<String> devices = new ArrayList<>();
+  private Intent bluetoothServiceIntent;
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -41,9 +47,38 @@ public class MainActivity extends AppCompatActivity {
     stop = (Button) findViewById(R.id.stop);
     result = (ListView) findViewById(R.id.result);
 
+    toolbar = (Toolbar) findViewById(R.id.toolbar);
+    toolbar.setTitle("RxBluetooth");
+    toolbar.inflateMenu(R.menu.main_menu);
+    toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+      @Override public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+          case R.id.menu_enable_bt:
+            if (rxBluetooth.isBluetoothAvailable() && !rxBluetooth.isBluetoothEnabled()) {
+              Log.d(TAG, "Enabling Bluetooth");
+              rxBluetooth.enableBluetooth(MainActivity.this, REQUEST_ENABLE_BT);
+            }
+            return true;
+
+          case R.id.menu_service_start:
+            showToast("Starting service");
+            startService(bluetoothServiceIntent);
+            return true;
+
+          case R.id.menu_service_stop:
+            showToast("Stopping service");
+            stopService(bluetoothServiceIntent);
+            return true;
+        }
+        return false;
+      }
+    });
+
+    bluetoothServiceIntent = new Intent(MainActivity.this, BluetoothService.class);
+
     rxBluetooth = new RxBluetooth(this);
 
-    if  (!rxBluetooth.isBluetoothAvailable()) {
+    if (!rxBluetooth.isBluetoothAvailable()) {
       // handle the lack of bluetooth support
       Log.d(TAG, "Bluetooth is not supported!");
     } else {
@@ -155,5 +190,9 @@ public class MainActivity extends AppCompatActivity {
       subscription.unsubscribe();
       subscription = null;
     }
+  }
+
+  private void showToast(String message) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
   }
 }
