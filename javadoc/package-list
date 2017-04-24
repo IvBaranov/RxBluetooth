@@ -1,1 +1,3 @@
 com.github.ivbaranov.rxbluetooth
+com.github.ivbaranov.rxbluetooth.events
+com.github.ivbaranov.rxbluetooth.exceptions
