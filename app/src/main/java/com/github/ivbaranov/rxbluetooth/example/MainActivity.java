@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 
   private void setAdapter(List<BluetoothDevice> list) {
     int itemLayoutId = android.R.layout.simple_list_item_1;
-    result.setAdapter(new ArrayAdapter(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
+    result.setAdapter(new ArrayAdapter<BluetoothDevice>(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
       @Override
       public View getView(int position, View convertView, ViewGroup parent) {
         View view = super.getView(position, convertView, parent);
