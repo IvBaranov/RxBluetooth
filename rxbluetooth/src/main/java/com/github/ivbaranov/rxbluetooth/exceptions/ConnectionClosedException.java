@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.github.ivbaranov.rxbluetooth;
+package com.github.ivbaranov.rxbluetooth.exceptions;
 
-import android.bluetooth.BluetoothAdapter;
+import java.io.IOException;
 
-/**
- * Thrown when {@link BluetoothAdapter#getProfileProxy} returns true, which means that connection
- * to bluetooth profile failed.
- */
-public class GetProfileProxyException extends RuntimeException {
+public class ConnectionClosedException extends IOException {
 
-  public GetProfileProxyException() {
-    super("Failed to get profile proxy");
+  public ConnectionClosedException() {
+    super("Connection is closed.");
+  }
+
+  public ConnectionClosedException(String message) {
+    super(message);
   }
 }

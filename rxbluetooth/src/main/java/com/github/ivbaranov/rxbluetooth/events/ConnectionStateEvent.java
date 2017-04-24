@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.github.ivbaranov.rxbluetooth;
+ package com.github.ivbaranov.rxbluetooth.events;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 
 /**
- * Event container class.  Contains bond state (whether the device is unbonded, bonding, or bonded),
- * previous bond state, and {@link BluetoothDevice}.
+ * Event container class.  Contains connection state (whether the device is disconnected, connecting, connected,
+ * or disconnecting), previous connection state, and {@link BluetoothDevice}.
  *
  * Possible state values are:
- * {@link BluetoothDevice#BOND_NONE},
- * {@link BluetoothDevice#BOND_BONDING},
- * {@link BluetoothDevice#BOND_BONDED}
+ * {@link BluetoothAdapter#STATE_DISCONNECTED},
+ * {@link BluetoothAdapter#STATE_CONNECTING},
+ * {@link BluetoothAdapter#STATE_CONNECTED},
+ * {@link BluetoothAdapter#STATE_DISCONNECTING}
  */
-public class BondStateEvent {
+public class ConnectionStateEvent {
 
   private int mState;
   private int mPreviousState;
   private BluetoothDevice mBluetoothDevice;
 
-  public BondStateEvent(int state, int previousState, BluetoothDevice bluetoothDevice) {
+  public ConnectionStateEvent(int state, int previousState, BluetoothDevice bluetoothDevice) {
     mState = state;
     mPreviousState = previousState;
     mBluetoothDevice = bluetoothDevice;
@@ -54,7 +56,7 @@ public class BondStateEvent {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
 
-    BondStateEvent that = (BondStateEvent) o;
+    ConnectionStateEvent that = (ConnectionStateEvent) o;
 
     if (mState != that.mState) return false;
     if (mPreviousState != that.mPreviousState) return false;
@@ -70,7 +72,7 @@ public class BondStateEvent {
   }
 
   @Override public String toString() {
-    return "BondStateEvent{" +
+    return "ConnectionStateEvent{" +
         "mState=" + mState +
         ", mPreviousState=" + mPreviousState +
         ", mBluetoothDevice=" + mBluetoothDevice +

@@ -27,6 +27,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Looper;
 import android.text.TextUtils;
+import com.github.ivbaranov.rxbluetooth.events.AclEvent;
+import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
+import com.github.ivbaranov.rxbluetooth.events.ConnectionStateEvent;
+import com.github.ivbaranov.rxbluetooth.events.ServiceEvent;
+import com.github.ivbaranov.rxbluetooth.exceptions.GetProfileProxyException;
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
@@ -369,8 +374,11 @@ public class RxBluetooth {
           @Override public void call(final Subscriber<? super ConnectionStateEvent> subscriber) {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
-                int status = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE, BluetoothAdapter.STATE_DISCONNECTED);
-                int previousStatus = intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_CONNECTION_STATE, BluetoothAdapter.STATE_DISCONNECTED);
+                int status = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE,
+                    BluetoothAdapter.STATE_DISCONNECTED);
+                int previousStatus =
+                    intent.getIntExtra(BluetoothAdapter.EXTRA_PREVIOUS_CONNECTION_STATE,
+                        BluetoothAdapter.STATE_DISCONNECTED);
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 subscriber.onNext(new ConnectionStateEvent(status, previousStatus, device));
@@ -407,8 +415,10 @@ public class RxBluetooth {
           @Override public void call(final Subscriber<? super BondStateEvent> subscriber) {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
-                int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE);
-                int previousState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, BluetoothDevice.BOND_NONE);
+                int state =
+                    intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.BOND_NONE);
+                int previousState = intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE,
+                    BluetoothDevice.BOND_NONE);
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                 subscriber.onNext(new BondStateEvent(state, previousState, device));
@@ -478,6 +488,49 @@ public class RxBluetooth {
             } catch (IOException e) {
               subscriber.onError(e);
             }
+          }
+        });
+      }
+    });
+  }
+
+  /**
+   * Observes ACL broadcast actions from {@link BluetoothDevice}. Possible broadcast ACL action
+   * values are:
+   * {@link BluetoothDevice#ACTION_ACL_CONNECTED},
+   * {@link BluetoothDevice#ACTION_ACL_DISCONNECT_REQUESTED},
+   * {@link BluetoothDevice#ACTION_ACL_DISCONNECTED}
+   *
+   * @return RxJava Observable with {@link AclEvent}
+   */
+  public Observable<AclEvent> observeAclEvent() {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(BluetoothDevice.ACTION_ACL_CONNECTED);
+    filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+    filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
+
+    return Observable.defer(new Func0<Observable<AclEvent>>() {
+      @Override public Observable<AclEvent> call() {
+
+        return Observable.create(new Observable.OnSubscribe<AclEvent>() {
+
+          @Override public void call(final Subscriber<? super AclEvent> subscriber) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                String action = intent.getAction();
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                subscriber.onNext(new AclEvent(action, device));
+              }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            subscriber.add(unsubscribeInUiThread(new Action0() {
+              @Override public void call() {
+                context.unregisterReceiver(receiver);
+              }
+            }));
           }
         });
       }
