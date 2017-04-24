@@ -320,6 +320,28 @@ bluetoothConnection.send("Hello"); // String
 bluetoothConnection.send("There".getBytes()); // Array of bytes
 ```
 
+#### Observe ACL actions
+```java
+rxBluetooth.observeAclEvent() //
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.computation())
+            .subscribe(new Action1<AclEvent>() {
+              @Override public void call(AclEvent aclEvent) {
+                switch (aclEvent.getAction()) {
+                  case BluetoothDevice.ACTION_ACL_CONNECTED:
+                    //...
+                    break;
+                  case BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED:
+                    //...
+                    break;
+                  case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+                    //...
+                    break;
+                }
+              }
+            });
+```
+
 Download
 --------
 ```groovy
