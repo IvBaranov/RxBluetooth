@@ -48,7 +48,7 @@ Usage
     }
    ```
 
-4. Check that bluetooth is availible and enabled:
+4. Check that bluetooth is available and enabled:
    ```java
    // check if bluetooth is supported on your hardware
    if  (!rxBluetooth.isBluetoothAvailable()) {
@@ -345,7 +345,7 @@ rxBluetooth.observeAclEvent() //
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:0.1.5'
+compile 'com.github.ivbaranov:rxbluetooth:0.1.6'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
