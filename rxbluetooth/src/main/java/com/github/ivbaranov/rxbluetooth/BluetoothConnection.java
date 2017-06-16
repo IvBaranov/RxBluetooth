@@ -18,13 +18,18 @@ package com.github.ivbaranov.rxbluetooth;
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 import com.github.ivbaranov.rxbluetooth.exceptions.ConnectionClosedException;
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableEmitter;
+import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.FlowableOperator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import rx.Observable;
-import rx.Subscriber;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 public class BluetoothConnection {
 
@@ -35,7 +40,7 @@ public class BluetoothConnection {
   private InputStream inputStream;
   private OutputStream outputStream;
 
-  private Observable<Byte> mObserveInputStream;
+  private Flowable<Byte> mObserveInputStream;
 
   private boolean connected = false;
 
@@ -71,11 +76,11 @@ public class BluetoothConnection {
    *
    * @return RxJava Observable with {@link Byte}
    */
-  public Observable<Byte> observeByteStream() {
+  public Flowable<Byte> observeByteStream() {
     if (mObserveInputStream == null) {
-      mObserveInputStream = Observable.create(new Observable.OnSubscribe<Byte>() {
-        @Override public void call(Subscriber<? super Byte> subscriber) {
-          while (!subscriber.isUnsubscribed()) {
+      mObserveInputStream = Flowable.create(new FlowableOnSubscribe<Byte>() {
+        @Override public void subscribe(final FlowableEmitter<Byte> subscriber) {
+          while (!subscriber.isCancelled()) {
             try {
               subscriber.onNext((byte) inputStream.read());
             } catch (IOException e) {
@@ -88,7 +93,7 @@ public class BluetoothConnection {
             }
           }
         }
-      }).share();
+      }, BackpressureStrategy.BUFFER).share();
     }
 
     return mObserveInputStream;
@@ -100,7 +105,7 @@ public class BluetoothConnection {
    *
    * @return RxJava Observable with {@link String}
    */
-  public Observable<String> observeStringStream() {
+  public Flowable<String> observeStringStream() {
     return observeStringStream('\r', '\n');
   }
 
@@ -110,30 +115,28 @@ public class BluetoothConnection {
    * @param delimiter char(s) used for string delimiter
    * @return RxJava Observable with {@link String}
    */
-  public Observable<String> observeStringStream(final int... delimiter) {
-    return observeByteStream().lift(new Observable.Operator<String, Byte>() {
-      @Override public Subscriber<? super Byte> call(final Subscriber<? super String> subscriber) {
-        return new Subscriber<Byte>(subscriber) {
+  public Flowable<String> observeStringStream(final int... delimiter) {
+    return observeByteStream().lift(new FlowableOperator<String, Byte>() {
+      @Override public Subscriber<? super Byte> apply(final Subscriber<? super String> subscriber) {
+        return new Subscriber<Byte>() {
           ArrayList<Byte> buffer = new ArrayList<>();
 
-          @Override public void onCompleted() {
+          @Override public void onSubscribe(Subscription d) {
+            subscriber.onSubscribe(d);
+          }
+
+          @Override public void onComplete() {
             if (!buffer.isEmpty()) {
               emit();
             }
-
-            if (!subscriber.isUnsubscribed()) {
-              subscriber.onCompleted();
-            }
+            subscriber.onComplete();
           }
 
           @Override public void onError(Throwable e) {
             if (!buffer.isEmpty()) {
               emit();
             }
-
-            if (!subscriber.isUnsubscribed()) {
-              subscriber.onError(e);
-            }
+            subscriber.onError(e);
           }
 
           @Override public void onNext(Byte b) {
@@ -154,9 +157,7 @@ public class BluetoothConnection {
 
           private void emit() {
             if (buffer.isEmpty()) {
-              if (!subscriber.isUnsubscribed()) {
-                subscriber.onNext("");
-              }
+              subscriber.onNext("");
               return;
             }
 
@@ -166,9 +167,7 @@ public class BluetoothConnection {
               bArray[i] = buffer.get(i);
             }
 
-            if (!subscriber.isUnsubscribed()) {
-              subscriber.onNext(new String(bArray));
-            }
+            subscriber.onNext(new String(bArray));
             buffer.clear();
           }
         };

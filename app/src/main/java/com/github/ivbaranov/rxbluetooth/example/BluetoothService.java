@@ -7,15 +7,15 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import com.github.ivbaranov.rxbluetooth.RxBluetooth;
-import rx.Subscription;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class BluetoothService extends Service {
   private static final String TAG = "BluetoothService";
 
   private RxBluetooth rxBluetooth;
-  private Subscription deviceSubscription;
+  private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
   @Override public void onCreate() {
     super.onCreate();
@@ -31,36 +31,31 @@ public class BluetoothService extends Service {
       if (!rxBluetooth.isBluetoothEnabled()) {
         Log.d(TAG, "Bluetooth should be enabled first!");
       } else {
-        deviceSubscription = rxBluetooth.observeDevices()
+        compositeDisposable.add(rxBluetooth.observeDevices()
             .observeOn(Schedulers.computation())
             .subscribeOn(Schedulers.computation())
-            .subscribe(new Action1<BluetoothDevice>() {
-              @Override public void call(BluetoothDevice bluetoothDevice) {
-                Log.d(TAG,
-                    "Device found: " + bluetoothDevice.getAddress() + " - " + bluetoothDevice.getName());
+            .subscribe(new Consumer<BluetoothDevice>() {
+              @Override public void accept(BluetoothDevice bluetoothDevice) {
+                Log.d(TAG, "Device found: "
+                    + bluetoothDevice.getAddress()
+                    + " - "
+                    + bluetoothDevice.getName());
               }
-            });
+            }));
         rxBluetooth.startDiscovery();
       }
     }
   }
 
   @Override public void onDestroy() {
-    super.onDestroy();
-
-    Log.d(TAG, "BluetoothService stopped!");
+    compositeDisposable.dispose();
     rxBluetooth.cancelDiscovery();
-    unsubscribe(deviceSubscription);
+
+    super.onDestroy();
+    Log.d(TAG, "BluetoothService stopped!");
   }
 
   @Nullable @Override public IBinder onBind(Intent intent) {
     return null;
-  }
-
-  private static void unsubscribe(Subscription subscription) {
-    if (subscription != null && !subscription.isUnsubscribed()) {
-      subscription.unsubscribe();
-      subscription = null;
-    }
   }
 }

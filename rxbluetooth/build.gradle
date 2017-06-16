@@ -19,8 +19,8 @@ android {
 dependencies {
   compile "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
 
-  compile "io.reactivex:rxjava:$RXJAVA_VERSION"
-  compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
+  compile "io.reactivex.rxjava2:rxjava:$RXJAVA_VERSION"
+  compile "io.reactivex.rxjava2:rxandroid:$RXANDROID_VERSION"
 }
 
 publish {
