@@ -5,11 +5,13 @@ RxBluetooth
 
 Android reactive bluetooth library. Basically, RxBluetooth is just wrapper around android [BluetoothAdapter](http://developer.android.com/intl/ru/reference/android/bluetooth/BluetoothAdapter.html), so first of all the [Bluetooth](http://developer.android.com/intl/ru/guide/topics/connectivity/bluetooth.html) developer guide should be read.
 
+RxBluetooth for RxJava 1 is available in [respective branch](https://github.com/IvBaranov/RxBluetooth/tree/rxjava-1.x).
+
 Full documentation
 ------------------
 
 * [Wiki](https://github.com/IvBaranov/RxBluetooth/wiki/Getting-started)
-* [Javadoc](http://ivbaranov.github.io/RxBluetooth2/javadoc/)
+* [Javadoc](http://ivbaranov.github.io/RxBluetooth/javadoc2/)
 
 Usage
 -----
@@ -343,7 +345,7 @@ rxBluetooth.observeAclEvent() //
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:2.0.0-SNAPSHOT'
+compile 'com.github.ivbaranov:rxbluetooth2:2.0.0-SNAPSHOT'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
