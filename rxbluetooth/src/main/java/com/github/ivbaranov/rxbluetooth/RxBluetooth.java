@@ -25,9 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Looper;
 import android.text.TextUtils;
-import android.util.Log;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
 import com.github.ivbaranov.rxbluetooth.events.ConnectionStateEvent;
@@ -36,11 +34,9 @@ import com.github.ivbaranov.rxbluetooth.exceptions.GetProfileProxyException;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.disposables.Disposables;
-import io.reactivex.functions.Action;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.MainThreadDisposable;
+import io.reactivex.annotations.NonNull;
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
@@ -50,8 +46,6 @@ import java.util.concurrent.Callable;
  * Enables clients to listen to bluetooth events using RxJava Observables.
  */
 public class RxBluetooth {
-  private static String TAG = "RxBluetooth";
-
   private BluetoothAdapter mBluetoothAdapter;
   private Context context;
 
@@ -174,13 +168,11 @@ public class RxBluetooth {
    */
   public Observable<BluetoothDevice> observeDevices() {
     final IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-
-    return Observable.defer(new Callable<Observable<BluetoothDevice>>() {
-
-      @Override public Observable<BluetoothDevice> call() throws Exception {
+    return Observable.defer(new Callable<ObservableSource<? extends BluetoothDevice>>() {
+      @Override public ObservableSource<? extends BluetoothDevice> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<BluetoothDevice>() {
-
-          @Override public void subscribe(final ObservableEmitter<BluetoothDevice> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<BluetoothDevice> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -193,13 +185,10 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
-                try {
-                  context.unregisterReceiver(receiver);
-                } catch (Exception exception) {
-                  Log.e(TAG, "Receiver was already unregistered", exception);
-                }
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
+                context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
@@ -219,12 +208,11 @@ public class RxBluetooth {
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
     filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 
-    return Observable.defer(new Callable<Observable<String>>() {
-
-      @Override public Observable<String> call() {
+    return Observable.defer(new Callable<ObservableSource<? extends String>>() {
+      @Override public ObservableSource<? extends String> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<String>() {
-
-          @Override public void subscribe(final ObservableEmitter<String> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<String> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 emitter.onNext(intent.getAction());
@@ -233,9 +221,10 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
@@ -257,12 +246,11 @@ public class RxBluetooth {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
 
-    return Observable.defer(new Callable<Observable<Integer>>() {
-      @Override public Observable<Integer> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+      @Override public ObservableSource<? extends Integer> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<Integer>() {
-
-          @Override public void subscribe(final ObservableEmitter<Integer> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<Integer> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 emitter.onNext(mBluetoothAdapter.getState());
@@ -271,9 +259,10 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
@@ -294,12 +283,11 @@ public class RxBluetooth {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 
-    return Observable.defer(new Callable<Observable<Integer>>() {
-      @Override public Observable<Integer> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends Integer>>() {
+      @Override public ObservableSource<? extends Integer> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<Integer>() {
-
-          @Override public void subscribe(final ObservableEmitter<Integer> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<Integer> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 emitter.onNext(mBluetoothAdapter.getScanMode());
@@ -308,9 +296,10 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
@@ -328,12 +317,11 @@ public class RxBluetooth {
    * @return RxJava Observable with {@link ServiceEvent}
    */
   public Observable<ServiceEvent> observeBluetoothProfile(final int bluetoothProfile) {
-
-    return Observable.defer(new Callable<Observable<ServiceEvent>>() {
-      @Override public Observable<ServiceEvent> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends ServiceEvent>>() {
+      @Override public ObservableSource<? extends ServiceEvent> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<ServiceEvent>() {
-          @Override public void subscribe(final ObservableEmitter<ServiceEvent> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<ServiceEvent> emitter)
+              throws Exception {
             if (!mBluetoothAdapter.getProfileProxy(context, new BluetoothProfile.ServiceListener() {
               @Override public void onServiceConnected(int profile, BluetoothProfile proxy) {
                 emitter.onNext(new ServiceEvent(ServiceEvent.State.CONNECTED, profile, proxy));
@@ -376,12 +364,12 @@ public class RxBluetooth {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
 
-    return Observable.defer(new Callable<Observable<ConnectionStateEvent>>() {
-      @Override public Observable<ConnectionStateEvent> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends ConnectionStateEvent>>() {
+      @Override public ObservableSource<? extends ConnectionStateEvent> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<ConnectionStateEvent>() {
-
-          @Override public void subscribe(final ObservableEmitter<ConnectionStateEvent> emitter) {
+          @Override
+          public void subscribe(@NonNull final ObservableEmitter<ConnectionStateEvent> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 int status = intent.getIntExtra(BluetoothAdapter.EXTRA_CONNECTION_STATE,
@@ -397,9 +385,10 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
@@ -417,12 +406,11 @@ public class RxBluetooth {
     final IntentFilter filter = new IntentFilter();
     filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
 
-    return Observable.defer(new Callable<Observable<BondStateEvent>>() {
-      @Override public Observable<BondStateEvent> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends BondStateEvent>>() {
+      @Override public ObservableSource<? extends BondStateEvent> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<BondStateEvent>() {
-
-          @Override public void subscribe(final ObservableEmitter<BondStateEvent> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<BondStateEvent> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 int state =
@@ -437,9 +425,10 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
@@ -458,12 +447,11 @@ public class RxBluetooth {
    * @return observable with connected {@link BluetoothSocket} on successful connection
    */
   public Observable<BluetoothSocket> observeBluetoothSocket(final String name, final UUID uuid) {
-
-    return Observable.defer(new Callable<Observable<BluetoothSocket>>() {
-      @Override public Observable<BluetoothSocket> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends BluetoothSocket>>() {
+      @Override public ObservableSource<? extends BluetoothSocket> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<BluetoothSocket>() {
-          @Override public void subscribe(ObservableEmitter<BluetoothSocket> emitter) {
+          @Override public void subscribe(@NonNull ObservableEmitter<BluetoothSocket> emitter)
+              throws Exception {
             try {
               BluetoothServerSocket bluetoothServerSocket =
                   mBluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
@@ -488,10 +476,11 @@ public class RxBluetooth {
    */
   public Observable<BluetoothSocket> observeConnectDevice(final BluetoothDevice bluetoothDevice,
       final UUID uuid) {
-    return Observable.defer(new Callable<Observable<BluetoothSocket>>() {
-      @Override public Observable<BluetoothSocket> call() {
+    return Observable.defer(new Callable<ObservableSource<? extends BluetoothSocket>>() {
+      @Override public ObservableSource<? extends BluetoothSocket> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<BluetoothSocket>() {
-          @Override public void subscribe(ObservableEmitter<BluetoothSocket> emitter) {
+          @Override public void subscribe(@NonNull ObservableEmitter<BluetoothSocket> emitter)
+              throws Exception {
             try {
               BluetoothSocket bluetoothSocket =
                   bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
@@ -521,12 +510,11 @@ public class RxBluetooth {
     filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
     filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED);
 
-    return Observable.defer(new Callable<Observable<AclEvent>>() {
-      @Override public Observable<AclEvent> call() {
-
+    return Observable.defer(new Callable<ObservableSource<? extends AclEvent>>() {
+      @Override public ObservableSource<? extends AclEvent> call() throws Exception {
         return Observable.create(new ObservableOnSubscribe<AclEvent>() {
-
-          @Override public void subscribe(final ObservableEmitter<AclEvent> emitter) {
+          @Override public void subscribe(@NonNull final ObservableEmitter<AclEvent> emitter)
+              throws Exception {
             final BroadcastReceiver receiver = new BroadcastReceiver() {
               @Override public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
@@ -538,36 +526,14 @@ public class RxBluetooth {
 
             context.registerReceiver(receiver, filter);
 
-            unsubscribeInUiThread(new Action() {
-              @Override public void run() {
+            emitter.setDisposable(new MainThreadDisposable() {
+              @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
+                dispose();
               }
             });
           }
         });
-      }
-    });
-  }
-
-  private Disposable unsubscribeInUiThread(final Action unsubscribe) {
-    return Disposables.fromAction(new Action() {
-
-      @Override public void run() throws Exception {
-        if (Looper.getMainLooper() == Looper.myLooper()) {
-          unsubscribe.run();
-        } else {
-          final Scheduler.Worker inner = AndroidSchedulers.mainThread().createWorker();
-          inner.schedule(new Runnable() {
-            @Override public void run() {
-              try {
-                unsubscribe.run();
-              } catch (Exception e) {
-                Log.e(TAG, "An error occurred while unsubscribing in UI thread.", e);
-              }
-              inner.dispose();
-            }
-          });
-        }
       }
     });
   }
