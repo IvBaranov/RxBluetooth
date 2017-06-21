@@ -5,13 +5,13 @@ RxBluetooth
 
 Android reactive bluetooth library. Basically, RxBluetooth is just wrapper around android [BluetoothAdapter](http://developer.android.com/intl/ru/reference/android/bluetooth/BluetoothAdapter.html), so first of all the [Bluetooth](http://developer.android.com/intl/ru/guide/topics/connectivity/bluetooth.html) developer guide should be read.
 
-RxBluetooth is in early-stage. There is a lot of missing stuff. Feel free to [contribute](#contributing).
+RxBluetooth for RxJava 1 is available in [respective branch](https://github.com/IvBaranov/RxBluetooth/tree/rxjava-1.x) and on [gh-pages](http://ivbaranov.github.io/RxBluetooth/rxjava1).
 
 Full documentation
 ------------------
 
 * [Wiki](https://github.com/IvBaranov/RxBluetooth/wiki/Getting-started)
-* [Javadoc](http://ivbaranov.github.io/RxBluetooth/javadoc/)
+* [Javadoc](http://ivbaranov.github.io/RxBluetooth/javadoc2/)
 
 Usage
 -----
@@ -20,20 +20,52 @@ Usage
    ```xml
    <uses-permission android:name="android.permission.BLUETOOTH" />
    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+   // If you intend to run on devices with android 6.0+ you also need to declare:
+   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+   <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    ```
 
 2. Create `RxBluetooth` instance.
-
-3. Check if bluetooth is currently enabled and ready for use:
    ```java
+   RxBluetooth rxBluetooth = new RxBluetooth(this); // `this` is a context
+   ```
+3. For android 6.0+ you need location permision.
+   ```java
+   if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_COARSE_LOCATION);
+   }
+   // And catch the result like this:
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_COARSE_LOCATION) {
+            for (String permission : permissions) {
+                if (android.Manifest.permission.ACCESS_FINE_LOCATION.equals(permission)) {
+                    // Do stuff if permission granted
+                }
+            }
+        }
+    }
+   ```
+
+4. Check that bluetooth is available and enabled:
+   ```java
+   // check if bluetooth is supported on your hardware
    if  (!rxBluetooth.isBluetoothAvailable()) {
-      // to enable blutooth via startActivityForResult()
-      rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
+      // handle the lack of bluetooth support
+   } else {
+      // check if bluetooth is currently enabled and ready for use
+      if (!rxBluetooth.isBluetoothEnabled()) { 
+         // to enable bluetooth via startActivityForResult()
+         rxBluetooth.enableBluetooth(this, REQUEST_ENABLE_BT);
+      } else {
+         // you are ready
+      }
    }
    ```
 
-4. Have fun.
-5. Make sure you are unsubscribing and stopping discovery `OnDestroy()`:
+5. Have fun.
+6. Make sure you are unsubscribing and stopping discovery in `OnDestroy()`:
 
    ```java
    if (rxBluetooth != null) {
@@ -45,13 +77,13 @@ Usage
 ##### Observing devices
 ```java
 rxBluetooth.observeDevices()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.computation())
-      .subscribe(new Action1<BluetoothDevice>() {
-        @Override public void call(BluetoothDevice bluetoothDevice) {
-          //
-        }
-      });
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .subscribe(new Consumer<BluetoothDevice>() {
+      @Override public void accept(@NonNull BluetoothDevice bluetoothDevice) throws Exception {
+        //
+      }
+    }));
 ```
 
 ##### Create connection to device
@@ -61,17 +93,17 @@ rxBluetooth.observeDevices()
 UUID uuid = UUID.fromString("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
 
 rxBluetooth.observeConnectDevice(bluetoothDevice, uuid)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.io())
-      .subscribe(new Action1<BluetoothSocket>() {
-        @Override public void call(BluetoothSocket socket) {
-          // Connected to the device, do anything with the socket 
-        }
-      }, new Action1<Throwable>() {
-       @Override public void call(Throwable throwable) {
-         // Error occured
-       }
-     });
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.io())
+    .subscribe(new Consumer<BluetoothSocket>() {
+      @Override public void accept(BluetoothSocket socket) throws Exception {
+        // Connected to the device, do anything with the socket
+      }
+    }, new Consumer<Throwable>() {
+      @Override public void accept(Throwable throwable) throws Exception {
+        // Error occured
+      }
+    });
 ```
 
 ##### Observing discovery state
@@ -80,42 +112,42 @@ To observe just `ACTION_DISCOVERY_STARTED`:
 
 ```java
 rxBluetooth.observeDiscovery()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.computation())
-      .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
-      .subscribe(new Action1<String>() {
-        @Override public void call(String action) {
-          //
-        }
-      });
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .filter(BtPredicate.in(BluetoothAdapter.ACTION_DISCOVERY_STARTED))
+    .subscribe(new Consumer<String>() {
+      @Override public void accept(String action) throws Exception {
+        //
+      }
+    });
 ```
 
 To observe both `ACTION_DISCOVERY_STARTED` and `ACTION_DISCOVERY_FINISHED`:
 
 ```java
 rxBluetooth.observeDiscovery()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.computation())
-      .filter(Action.isEqualTo(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
-      .subscribe(new Action1<String>() {
-        @Override public void call(String action) {
-          //
-        }
-      });
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .filter(BtPredicate.in(BluetoothAdapter.ACTION_DISCOVERY_STARTED, BluetoothAdapter.ACTION_DISCOVERY_FINISHED))
+    .subscribe(new Consumer<String>() {
+      @Override public void accept(String action) throws Exception {
+        //
+      }
+    });
 ```
 
 ##### Observing bluetooth state
 
 ```java
 rxBluetooth.observeBluetoothState()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.computation())
-      .filter(Action.isEqualTo(BluetoothAdapter.STATE_ON))
-      .subscribe(new Action1<Integer>() {
-        @Override public void call(Integer integer) {
-          //
-        }
-      });
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .filter(BtPredicate.in(BluetoothAdapter.STATE_ON))
+    .subscribe(new Consumer<Integer>() {
+      @Override public void accept(Integer integer) throws Exception {
+        //
+      }
+    });
 ```
 
 You can observe single or multiple states:
@@ -130,14 +162,14 @@ BluetoothAdapter.STATE_TURNING_OFF
 
 ```java
 rxBluetooth.observeScanMode()
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.computation())
-      .filter(Action.isEqualTo(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
-      .subscribe(new Action1<Integer>() {
-        @Override public void call(Integer integer) {
-          //
-        }
-      });
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .filter(BtPredicate.in(BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE))
+    .subscribe(new Consumer<Integer>() {
+    @Override public void accept(Integer integer) throws Exception {
+      //
+    }
+    });
 ```
 
 You can observe single or multiple scan modes:
@@ -151,24 +183,24 @@ BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE
 
 ```java
 rxBluetooth.observeBluetoothProfile(myProfile)
-      .observeOn(AndroidSchedulers.mainThread())
-      .subscribeOn(Schedulers.computation())
-      .subscribe(new Action1<ServiceEvent>() {
-        @Override public void call(ServiceEvent serviceEvent) {
-          switch (serviceEvent.getState()) {
-           case CONNECTED:
-                BluetoothProfile bluetoothProfile = serviceEvent.getBluetoothProfile();
-                List<BluetoothDevice> devices = bluetoothProfile.getConnectedDevices();                        
-                for ( final BluetoothDevice dev : devices ) {
-                  //..
-                }
-                break;
-           case DISCONNECTED:
-                //serviceEvent.getBluetoothProfile() returns null
-                break;
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .subscribe(new Consumer<ServiceEvent>() {
+    @Override public void accept(ServiceEvent serviceEvent) throws Exception {
+      switch (serviceEvent.getState()) {
+       case CONNECTED:
+            BluetoothProfile bluetoothProfile = serviceEvent.getBluetoothProfile();
+            List<BluetoothDevice> devices = bluetoothProfile.getConnectedDevices();
+            for ( final BluetoothDevice dev : devices ) {
+              //..
             }
-          }
-        });
+            break;
+       case DISCONNECTED:
+            //serviceEvent.getBluetoothProfile() returns null
+            break;
+        }
+      }
+    });
 ```
 
 `myProfile` can be one of `BluetoothProfile.HEALTH`, `BluetoothProfile.HEADSET`, `BluetoothProfile.A2DP`, `BluetoothProfile.GATT` or `BluetoothProfile.GATT_SERVER`
@@ -176,6 +208,74 @@ rxBluetooth.observeBluetoothProfile(myProfile)
 Clients should close profile proxy when they are no longer using the proxy obtained from `observeBluetoothProfile`:
 ```java
 rxBluetooth.closeProfileProxy(int profile, BluetoothProfile proxy);
+```
+
+##### Observing device state
+
+To observe the current device state, you can receive the `ConnectionStateEvent` which provides the state, previous state, and `BluetoothDevice`.
+
+```java
+rxBluetooth.observeConnectionState()
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .subscribe(new Consumer<ConnectionStateEvent>() {
+    @Override public void accept(ConnectionStateEvent event) throws Exception {
+      switch (event.getState()) {
+        case BluetoothAdapter.STATE_DISCONNECTED:
+            // device disconnected
+            break;
+        case BluetoothAdapter.STATE_CONNECTING:
+            // device connecting
+            break;
+        case BluetoothAdapter.STATE_CONNECTED:
+            // device connected
+            break;
+        case BluetoothAdapter.STATE_DISCONNECTING:
+            // device disconnecting
+            break;
+      }
+    }
+    });
+```
+
+Possible states are:
+```java
+BluetoothAdapter.STATE_DISCONNECTED
+BluetoothAdapter.STATE_CONNECTING
+BluetoothAdapter.STATE_CONNECTED
+BluetoothAdapter.STATE_DISCONNECTING
+```
+
+##### Observing device bond state
+
+To observe the bond state of devices, you can receive the `BondStateEvent` which provides the state, previous state, and `BluetoothDevice`.
+
+```java
+rxBluetooth.observeBondState()
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .subscribe(new Consumer<BondStateEvent>() {
+    @Override public void accept(BondStateEvent event) throws Exception {
+      switch (event.getState()) {
+        case BluetoothDevice.BOND_NONE:
+            // device unbonded
+            break;
+        case BluetoothDevice.BOND_BONDING:
+            // device bonding
+            break;
+        case BluetoothDevice.BOND_BONDED:
+            // device bonded
+            break;
+      }
+    }
+    });
+```
+
+Possible states are:
+```java
+BluetoothDevice.BOND_NONE
+BluetoothDevice.BOND_BONDING
+BluetoothDevice.BOND_BONDED
 ```
 
 #### Read and Write with BluetoothSocket
@@ -189,12 +289,12 @@ BluetoothConnection bluetoothConnection = new BluetoothConnection(bluetoothSocke
 bluetoothConnection.observeByteStream()
     .observeOn(AndroidSchedulers.mainThread())
     .subscribeOn(Schedulers.io())
-    .subscribe(new Action1<Byte>() {
-      @Override public void call(Byte aByte) {
+    .subscribe(new Consumer<Byte>() {
+      @Override public void accept(Byte aByte) throws Exception {
         // This will be called every single byte received
       }
-    }, new Action1<Throwable>() {
-      @Override public void call(Throwable throwable) {
+    }, new Consumer<Throwable>() {
+      @Override public void accept(Throwable throwable) throws Exception {
         // Error occured
       }
     });
@@ -203,12 +303,12 @@ bluetoothConnection.observeByteStream()
 bluetoothConnection.observeStringStream()
     .observeOn(AndroidSchedulers.mainThread())
     .subscribeOn(Schedulers.io())
-    .subscribe(new Action1<String>() {
-      @Override public void call(String string) {
+    .subscribe(new Consumer<String>() {
+      @Override public void call(String string) throws Exception {
         // This will be called every string received
       }
-    }, new Action1<Throwable>() {
-      @Override public void call(Throwable throwable) {
+    }, new Consumer<Throwable>() {
+      @Override public void call(Throwable throwable) throws Exception {
         // Error occured
       }
     });
@@ -220,10 +320,32 @@ bluetoothConnection.send("Hello"); // String
 bluetoothConnection.send("There".getBytes()); // Array of bytes
 ```
 
+#### Observe ACL actions
+```java
+rxBluetooth.observeAclEvent() //
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.computation())
+    .subscribe(new Consumer<AclEvent>() {
+      @Override public void accept(AclEvent aclEvent) throws Exception {
+        switch (aclEvent.getAction()) {
+          case BluetoothDevice.ACTION_ACL_CONNECTED:
+            //...
+            break;
+          case BluetoothDevice.ACTION_ACL_DISCONNECT_REQUESTED:
+            //...
+            break;
+          case BluetoothDevice.ACTION_ACL_DISCONNECTED:
+            //...
+            break;
+        }
+      }
+    });
+```
+
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth:0.1.0'
+compile 'com.github.ivbaranov:rxbluetooth2:2.0.0-SNAPSHOT'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
