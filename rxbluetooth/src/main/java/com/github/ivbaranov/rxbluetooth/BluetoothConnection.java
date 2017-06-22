@@ -97,7 +97,7 @@ public class BluetoothConnection {
 
   /**
    * Observes stream of bytes from bluetooth's {@link InputStream}
-   * and returns {@link Observable} of {@code byte[]}s.
+   * and returns Observable of {@code byte[]}s.
    * @param size internal buffer size
    * @return the Observable containing read byte arrays from the {@link InputStream}
    */
