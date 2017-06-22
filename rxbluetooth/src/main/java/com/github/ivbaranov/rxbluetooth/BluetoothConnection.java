@@ -25,6 +25,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import rx.Observable;
 import rx.Subscriber;
+import rx.observables.StringObservable;
 
 public class BluetoothConnection {
 
@@ -92,6 +93,15 @@ public class BluetoothConnection {
     }
 
     return mObserveInputStream;
+  }
+
+  /**
+   * Observes stream of bytes from bluetooth's {@link InputStream}.
+   * @param size size of internal buffer to store bytes
+   * @return RxJava Observable
+   */
+  public Observable<byte[]> observeSeveralBytesStream(int size) {
+    return StringObservable.from(inputStream, size);
   }
 
   /**

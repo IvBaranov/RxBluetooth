@@ -299,6 +299,22 @@ bluetoothConnection.observeByteStream()
       }
     });
 
+// Observe several bytes received
+bluetoothConnection.observeSeveralBytesStream(40)
+    .observeOn(AndroidSchedulers.mainThread())
+    .subscribeOn(Schedulers.io())
+    .subscribe(new Action1<byte[]>() {
+      @Override
+      public void call(byte[] bytes) {
+          // This will be called when bytes are received
+      }
+    }, new Action1<Throwable>() {
+      @Override
+      public void call(Throwable socketError) {
+        // Error occured
+      }
+    });
+
 // Or just observe string
 bluetoothConnection.observeStringStream()
     .observeOn(AndroidSchedulers.mainThread())

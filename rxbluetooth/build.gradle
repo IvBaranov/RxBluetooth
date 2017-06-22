@@ -21,6 +21,7 @@ dependencies {
 
   compile "io.reactivex:rxjava:$RXJAVA_VERSION"
   compile "io.reactivex:rxandroid:$RXANDROID_VERSION"
+  compile "io.reactivex:rxjava-string:$RXJAVA_STRING_VERSION"
 }
 
 publish {
