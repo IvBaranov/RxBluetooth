@@ -349,6 +349,13 @@ compile 'com.github.ivbaranov:rxbluetooth2:2.0.0-SNAPSHOT'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
+In order to download from snapshot repository add:
+```groovy
+repositories {
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+}
+```
+
 <a name="contributing"></a>Contributing
 ------------
 Make sure you use SquareAndroid code style. (https://github.com/square/java-code-styles)
