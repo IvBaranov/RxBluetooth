@@ -25,9 +25,11 @@ Usage
    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
    ```
 
-2. Create `RxBluetooth` instance.
+2. Create `RxBluetooth` instance and start scanning.
    ```java
    RxBluetooth rxBluetooth = new RxBluetooth(this); // `this` is a context
+
+   rxBluetooth.startDiscovery();
    ```
 3. For android 6.0+ you need location permision.
    ```java

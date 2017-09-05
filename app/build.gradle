@@ -26,4 +26,8 @@ dependencies {
   compile project(':rxbluetooth')
   compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
   compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
+
+
+  compile "io.reactivex.rxjava2:rxjava:$RXJAVA_VERSION"
+  compile "io.reactivex.rxjava2:rxandroid:$RXANDROID_VERSION"
 }
