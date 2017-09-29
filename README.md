@@ -336,6 +336,12 @@ bluetoothConnection.send("Hello"); // String
 bluetoothConnection.send("There".getBytes()); // Array of bytes
 ```
 
+##### Close:
+Remember to close streams and socket once you are done.
+```java
+bluetoothConnection.closeConnection();
+```
+
 #### Observe ACL actions
 ```java
 rxBluetooth.observeAclEvent() //
