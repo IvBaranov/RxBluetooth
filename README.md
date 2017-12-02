@@ -351,7 +351,7 @@ rxBluetooth.observeAclEvent() //
 Download
 --------
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth2:2.0.0-SNAPSHOT'
+compile 'com.github.ivbaranov:rxbluetooth2:2.0.0'
 ```
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
