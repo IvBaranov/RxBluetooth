@@ -27,20 +27,20 @@ import android.bluetooth.BluetoothDevice;
  */
 public class AclEvent {
 
-  private String mAction;
-  private BluetoothDevice mBluetoothDevice;
+  private String action;
+  private BluetoothDevice bluetoothDevice;
 
   public AclEvent(String action, BluetoothDevice bluetoothDevice) {
-    mAction = action;
-    mBluetoothDevice = bluetoothDevice;
+    this.action = action;
+    this.bluetoothDevice = bluetoothDevice;
   }
 
   public String getAction() {
-    return mAction;
+    return action;
   }
 
   public BluetoothDevice getBluetoothDevice() {
-    return mBluetoothDevice;
+    return bluetoothDevice;
   }
 
   @Override public boolean equals(Object o) {
@@ -49,21 +49,21 @@ public class AclEvent {
 
     AclEvent that = (AclEvent) o;
 
-    if (mAction != null && !mAction.equals(that.mAction)) return false;
-    return !(mBluetoothDevice != null ? !mBluetoothDevice.equals(that.mBluetoothDevice)
-        : that.mBluetoothDevice != null);
+    if (action != null && !action.equals(that.action)) return false;
+    return !(bluetoothDevice != null ? !bluetoothDevice.equals(that.bluetoothDevice)
+        : that.bluetoothDevice != null);
   }
 
   @Override public int hashCode() {
-    int result = mAction != null ? mAction.hashCode() : 0;
-    result = 31 * result + (mBluetoothDevice != null ? mBluetoothDevice.hashCode() : 0);
+    int result = action != null ? action.hashCode() : 0;
+    result = 31 * result + (bluetoothDevice != null ? bluetoothDevice.hashCode() : 0);
     return result;
   }
 
   @Override public String toString() {
     return "AclEvent{" +
-        "mAction=" + mAction +
-        ", mBluetoothDevice=" + mBluetoothDevice +
+        "action=" + action +
+        ", bluetoothDevice=" + bluetoothDevice +
         '}';
   }
 }

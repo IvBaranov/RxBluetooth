@@ -40,7 +40,7 @@ public class BluetoothConnection {
   private InputStream inputStream;
   private OutputStream outputStream;
 
-  private Flowable<Byte> mObserveInputStream;
+  private Flowable<Byte> observeInputStream;
 
   private boolean connected = false;
 
@@ -77,8 +77,8 @@ public class BluetoothConnection {
    * @return RxJava Observable with {@link Byte}
    */
   public Flowable<Byte> observeByteStream() {
-    if (mObserveInputStream == null) {
-      mObserveInputStream = Flowable.create(new FlowableOnSubscribe<Byte>() {
+    if (observeInputStream == null) {
+      observeInputStream = Flowable.create(new FlowableOnSubscribe<Byte>() {
         @Override public void subscribe(final FlowableEmitter<Byte> subscriber) {
           while (!subscriber.isCancelled()) {
             try {
@@ -96,7 +96,7 @@ public class BluetoothConnection {
       }, BackpressureStrategy.BUFFER).share();
     }
 
-    return mObserveInputStream;
+    return observeInputStream;
   }
 
   /**

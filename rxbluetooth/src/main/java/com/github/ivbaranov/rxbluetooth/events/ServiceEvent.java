@@ -13,42 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.github.ivbaranov.rxbluetooth.events;
+package com.github.ivbaranov.rxbluetooth.events;
 
 import android.bluetooth.BluetoothProfile;
 
 /**
  * Event container class.  Contains state (whether the service was just connected or
  * disconnected), profile type and {@link BluetoothProfile}. When service state is {@link
- * State#DISCONNECTED} the mBluetoothProfile is null.
+ * State#DISCONNECTED} the bluetoothProfile is null.
  */
 public class ServiceEvent {
 
   public enum State {
-    CONNECTED,
-    DISCONNECTED
+    CONNECTED, DISCONNECTED
   }
 
-  private State mState;
-  private int mProfileType;
-  private BluetoothProfile mBluetoothProfile;
+  private State state;
+  private int profileType;
+  private BluetoothProfile bluetoothProfile;
 
   public ServiceEvent(State state, int profileType, BluetoothProfile bluetoothProfile) {
-    mState = state;
-    mProfileType = profileType;
-    mBluetoothProfile = bluetoothProfile;
+    this.state = state;
+    this.profileType = profileType;
+    this.bluetoothProfile = bluetoothProfile;
   }
 
   public State getState() {
-    return mState;
+    return state;
   }
 
   public int getProfileType() {
-    return mProfileType;
+    return profileType;
   }
 
   public BluetoothProfile getBluetoothProfile() {
-    return mBluetoothProfile;
+    return bluetoothProfile;
   }
 
   @Override public boolean equals(Object o) {
@@ -57,24 +56,24 @@ public class ServiceEvent {
 
     ServiceEvent that = (ServiceEvent) o;
 
-    if (mProfileType != that.mProfileType) return false;
-    if (mState != that.mState) return false;
-    return !(mBluetoothProfile != null ? !mBluetoothProfile.equals(that.mBluetoothProfile)
-        : that.mBluetoothProfile != null);
+    if (profileType != that.profileType) return false;
+    if (state != that.state) return false;
+    return !(bluetoothProfile != null ? !bluetoothProfile.equals(that.bluetoothProfile)
+        : that.bluetoothProfile != null);
   }
 
   @Override public int hashCode() {
-    int result = mState.hashCode();
-    result = 31 * result + mProfileType;
-    result = 31 * result + (mBluetoothProfile != null ? mBluetoothProfile.hashCode() : 0);
+    int result = state.hashCode();
+    result = 31 * result + profileType;
+    result = 31 * result + (bluetoothProfile != null ? bluetoothProfile.hashCode() : 0);
     return result;
   }
 
   @Override public String toString() {
     return "ServiceEvent{" +
-        "mState=" + mState +
-        ", mProfileType=" + mProfileType +
-        ", mBluetoothProfile=" + mBluetoothProfile +
+        "state=" + state +
+        ", profileType=" + profileType +
+        ", bluetoothProfile=" + bluetoothProfile +
         '}';
   }
 }
