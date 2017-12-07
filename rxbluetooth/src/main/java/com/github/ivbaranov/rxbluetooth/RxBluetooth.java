@@ -91,6 +91,30 @@ public class RxBluetooth {
   }
 
   /**
+   * Turn on the local Bluetooth adapter — do not use without explicit user action to turn on
+   * Bluetooth.
+   *
+   * @return true to indicate adapter startup has begun, or false on
+   * immediate error
+   * @see BluetoothAdapter#enable()
+   */
+  public boolean enable() {
+    return mBluetoothAdapter.enable();
+  }
+
+  /**
+   * Turn off the local Bluetooth adapter — do not use without explicit user action to turn off
+   * Bluetooth.
+   *
+   * @return true to indicate adapter shutdown has begun, or false on
+   * immediate error
+   * @see BluetoothAdapter#enable()
+   */
+  public boolean disable() {
+    return mBluetoothAdapter.disable();
+  }
+
+  /**
    * Return the set of {@link BluetoothDevice} objects that are bonded
    * (paired) to the local adapter.
    * <p>If Bluetooth state is not {@link BluetoothAdapter#STATE_ON}, this API
