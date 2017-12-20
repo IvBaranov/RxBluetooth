@@ -175,6 +175,7 @@ public class BluetoothConnection {
 
             subscriber.onNext(new String(bArray));
             buffer.clear();
+            receivedDelimiters.clear();
           }
 
           /** Returns true if list of received delimiter(s) matched the provided one(s).*/
