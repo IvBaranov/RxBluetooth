@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
@@ -120,6 +122,7 @@ public class BluetoothConnection {
       @Override public Subscriber<? super Byte> apply(final Subscriber<? super String> subscriber) {
         return new Subscriber<Byte>() {
           ArrayList<Byte> buffer = new ArrayList<>();
+          List<Integer> receivedDelimiters = new ArrayList<>();
 
           @Override public void onSubscribe(Subscription d) {
             subscriber.onSubscribe(d);
@@ -143,13 +146,16 @@ public class BluetoothConnection {
             boolean found = false;
             for (int d : delimiter) {
               if (b == d) {
+                receivedDelimiters.add((int) b);
                 found = true;
                 break;
               }
             }
 
             if (found) {
-              emit();
+              if (!delimitersMatched()) {
+                emit();
+              }
             } else {
               buffer.add(b);
             }
@@ -169,6 +175,16 @@ public class BluetoothConnection {
 
             subscriber.onNext(new String(bArray));
             buffer.clear();
+          }
+
+          /** Returns true if list of received delimiter(s) matched the provided one(s).*/
+          private boolean delimitersMatched() {
+            int[] array = new int[receivedDelimiters.size()];
+            for (int i = 0; i < receivedDelimiters.size(); i++) {
+              array[i] = receivedDelimiters.get(i);
+            }
+
+            return Arrays.equals(array, delimiter);
           }
         };
       }
