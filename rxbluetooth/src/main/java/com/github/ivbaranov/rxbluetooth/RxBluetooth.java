@@ -25,6 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
@@ -479,10 +480,13 @@ public class RxBluetooth {
             try {
               BluetoothServerSocket bluetoothServerSocket =
                   bluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
-              emitter.onNext(bluetoothServerSocket.accept());
-              bluetoothServerSocket.close();
-            } catch (IOException e) {
-              emitter.onError(e);
+              try {
+                emitter.onNext(bluetoothServerSocket.accept());
+              } finally {
+                bluetoothServerSocket.close();
+              }
+            } catch(IOException e) {
+                emitter.onError(e);
             }
           }
         });
@@ -505,12 +509,21 @@ public class RxBluetooth {
         return Observable.create(new ObservableOnSubscribe<BluetoothSocket>() {
           @Override public void subscribe(@NonNull ObservableEmitter<BluetoothSocket> emitter)
               throws Exception {
+            BluetoothSocket bluetoothSocket = null;
             try {
-              BluetoothSocket bluetoothSocket =
-                  bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
+              bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
               bluetoothSocket.connect();
               emitter.onNext(bluetoothSocket);
             } catch (IOException e) {
+              if(bluetoothSocket != null) {
+                try {
+                  bluetoothSocket.close();
+                } catch (IOException suppressed) {
+                  if (Build.VERSION.SDK_INT >= 19) {
+                    e.addSuppressed(suppressed);
+                  }
+                }
+              }
               emitter.onError(e);
             }
           }
