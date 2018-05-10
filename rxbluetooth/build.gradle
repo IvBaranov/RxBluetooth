@@ -24,6 +24,7 @@ dependencies {
 }
 
 publish {
+  userOrg = USER_ORG
   groupId = GROUP
   artifactId = ARTIFACT_ID
   publishVersion = VERSION_NAME
