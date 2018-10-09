@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
@@ -44,6 +45,8 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.location.LocationManager.GPS_PROVIDER;
+import static android.location.LocationManager.NETWORK_PROVIDER;
 import static android.os.Build.VERSION.SDK_INT;
 
 /**
@@ -92,6 +95,16 @@ public class RxBluetooth {
     }
 
     return true;
+  }
+
+  /**
+   * Return true if a location service is enabled.
+   *
+   * @return true if either the GPS or Network provider is enabled
+   */
+  public boolean isLocationServiceEnabled() {
+    LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    return locationManager.isProviderEnabled(GPS_PROVIDER) || locationManager.isProviderEnabled(NETWORK_PROVIDER);
   }
 
   /**
