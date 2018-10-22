@@ -25,12 +25,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
-import android.os.Parcelable;
-import android.os.RemoteException;
-import android.support.annotation.RequiresApi;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
+import android.os.Build;
+import android.os.Parcelable;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
@@ -632,7 +631,6 @@ public class RxBluetooth {
                 @Override
                 protected void onDispose() {
                     context.unregisterReceiver(receiver);
-                    dispose();
                 }
             });
 
