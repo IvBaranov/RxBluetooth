@@ -213,7 +213,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -249,7 +248,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -287,7 +285,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -324,7 +321,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -413,7 +409,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -453,7 +448,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -566,7 +560,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
