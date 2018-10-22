@@ -29,6 +29,8 @@ import android.os.Build;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.support.annotation.RequiresApi;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
@@ -45,6 +47,11 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.location.LocationManager.GPS_PROVIDER;
+import static android.location.LocationManager.NETWORK_PROVIDER;
+import static android.os.Build.VERSION.SDK_INT;
 
 /**
  * Enables clients to listen to bluetooth events using RxJava Observables.
@@ -78,6 +85,30 @@ public class RxBluetooth {
    */
   public boolean isBluetoothEnabled() {
     return bluetoothAdapter.isEnabled();
+  }
+
+  /**
+   * Return true if Location permission is granted.
+   *
+   * @return true if the local permission is granted. Pre 23 it will always return true. Post 22
+   * it will ask the Context whether the permission has been granted or not.
+   */
+  public boolean isLocationPermissionGranted() {
+    if (SDK_INT >= 23) {
+      return context.checkSelfPermission(ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    return true;
+  }
+
+  /**
+   * Return true if a location service is enabled.
+   *
+   * @return true if either the GPS or Network provider is enabled
+   */
+  public boolean isLocationServiceEnabled() {
+    LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+    return locationManager.isProviderEnabled(GPS_PROVIDER) || locationManager.isProviderEnabled(NETWORK_PROVIDER);
   }
 
   /**
@@ -216,7 +247,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -252,7 +282,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -290,7 +319,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -327,7 +355,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -416,7 +443,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -456,7 +482,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
@@ -522,7 +547,7 @@ public class RxBluetooth {
                 try {
                   bluetoothSocket.close();
                 } catch (IOException suppressed) {
-                  if (Build.VERSION.SDK_INT >= 19) {
+                  if (SDK_INT >= 19) {
                     e.addSuppressed(suppressed);
                   }
                 }
@@ -569,7 +594,6 @@ public class RxBluetooth {
             emitter.setDisposable(new MainThreadDisposable() {
               @Override protected void onDispose() {
                 context.unregisterReceiver(receiver);
-                dispose();
               }
             });
           }
