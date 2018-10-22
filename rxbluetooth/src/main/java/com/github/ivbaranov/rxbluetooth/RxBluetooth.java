@@ -622,6 +622,7 @@ public class RxBluetooth {
               @Override public void onReceive(Context context, Intent intent) {
                       Parcelable[] uuids = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
                       emitter.onNext(uuids);
+                      emitter.onComplete();
                   }
             };
 
@@ -635,7 +636,6 @@ public class RxBluetooth {
             });
 
             bluetoothDevice.fetchUuidsWithSdp();
-
           }
         });
       }
