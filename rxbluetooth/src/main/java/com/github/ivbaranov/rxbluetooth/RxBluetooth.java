@@ -25,7 +25,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
+import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
@@ -42,6 +42,9 @@ import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.os.Build.VERSION.SDK_INT;
 
 /**
  * Enables clients to listen to bluetooth events using RxJava Observables.
@@ -75,6 +78,20 @@ public class RxBluetooth {
    */
   public boolean isBluetoothEnabled() {
     return bluetoothAdapter.isEnabled();
+  }
+
+  /**
+   * Return true if Location permission is granted.
+   *
+   * @return true if the local permission is granted. Pre 23 it will always return true. Post 22
+   * it will ask the Context whether the permission has been granted or not.
+   */
+  public boolean isLocationPermissionGranted() {
+    if (SDK_INT >= 23) {
+      return context.checkSelfPermission(ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    return true;
   }
 
   /**
@@ -513,7 +530,7 @@ public class RxBluetooth {
                 try {
                   bluetoothSocket.close();
                 } catch (IOException suppressed) {
-                  if (Build.VERSION.SDK_INT >= 19) {
+                  if (SDK_INT >= 19) {
                     e.addSuppressed(suppressed);
                   }
                 }
