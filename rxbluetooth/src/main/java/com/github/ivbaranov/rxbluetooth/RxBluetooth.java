@@ -25,6 +25,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
+import android.os.Parcelable;
+import android.os.RemoteException;
+import android.support.annotation.RequiresApi;
 import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.text.TextUtils;
@@ -592,6 +596,48 @@ public class RxBluetooth {
                 context.unregisterReceiver(receiver);
               }
             });
+          }
+        });
+      }
+    });
+  }
+
+    /**
+     * Performs a service discovery and fetches a list of UUIDs that can be used to connect to {@link BluetoothDevice}
+     *
+     * @param bluetoothDevice bluetooth device to connect
+     * @return RxJava Observable with an array of Device UUIDs that can be used to connect to the device
+     */
+
+  @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
+  public Observable<Parcelable[]> observeFetchDeviceUuids(final BluetoothDevice bluetoothDevice) {
+    final IntentFilter filter = new IntentFilter();
+    filter.addAction(BluetoothDevice.ACTION_UUID);
+
+    return Observable.defer(new Callable<ObservableSource<Parcelable[]>>() {
+      @Override public ObservableSource<Parcelable[]> call() {
+        return Observable.create(new ObservableOnSubscribe<Parcelable[]>() {
+          @Override
+          public void subscribe(@NonNull final ObservableEmitter<Parcelable[]> emitter) {
+            final BroadcastReceiver receiver = new BroadcastReceiver() {
+              @Override public void onReceive(Context context, Intent intent) {
+                      Parcelable[] uuids = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
+                      emitter.onNext(uuids);
+                  }
+            };
+
+            context.registerReceiver(receiver, filter);
+
+            emitter.setDisposable(new MainThreadDisposable() {
+                @Override
+                protected void onDispose() {
+                    context.unregisterReceiver(receiver);
+                    dispose();
+                }
+            });
+
+            bluetoothDevice.fetchUuidsWithSdp();
+
           }
         });
       }
