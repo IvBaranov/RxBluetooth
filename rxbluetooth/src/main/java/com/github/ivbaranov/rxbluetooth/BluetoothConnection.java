@@ -87,7 +87,7 @@ public class BluetoothConnection {
               subscriber.onNext((byte) inputStream.read());
             } catch (IOException e) {
               connected = false;
-              subscriber.onError(new ConnectionClosedException("Can't read stream"));
+              subscriber.onError(new ConnectionClosedException("Can't read stream", e));
             } finally {
               if (!connected) {
                 closeConnection();
