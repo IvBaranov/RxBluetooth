@@ -25,7 +25,7 @@ import android.bluetooth.BluetoothDevice;
  * {@link BluetoothDevice#ACTION_ACL_DISCONNECT_REQUESTED},
  * {@link BluetoothDevice#ACTION_ACL_DISCONNECTED}
  */
-public class AclEvent {
+public final class AclEvent {
 
   private String action;
   private BluetoothDevice bluetoothDevice;
