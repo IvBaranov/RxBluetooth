@@ -55,7 +55,7 @@ import static android.os.Build.VERSION.SDK_INT;
 /**
  * Enables clients to listen to bluetooth events using RxJava Observables.
  */
-public class RxBluetooth {
+public final class RxBluetooth {
   private BluetoothAdapter bluetoothAdapter;
   private Context context;
 
