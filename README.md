@@ -77,22 +77,31 @@ rxBluetooth.observeDevices()
     }));
 ```
 
-##### Create connection to device
+##### Create connection between devices
 ```java
-// Use 00001101-0000-1000-8000-00805F9B34FB for SPP service 
+// Use 00001101-0000-1000-8000-00805F9B34FB for SPP service
 // (ex. Arduino) or use your own generated UUID.
-UUID uuid = UUID.fromString("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
+// UUID uuid = UUID.fromString("xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx");
 
-rxBluetooth.observeConnectDevice(bluetoothDevice, uuid)
-    .observeOn(AndroidSchedulers.mainThread())
-    .subscribeOn(Schedulers.io())
-    .subscribe(new Consumer<BluetoothSocket>() {
-      @Override public void accept(BluetoothSocket socket) throws Exception {
-        // Connected to the device, do anything with the socket
+rxBluetooth.connectAsServer("servername", uuid).subscribe(
+    new Consumer<BluetoothSocket>() {
+      @Override public void accept(BluetoothSocket bluetoothSocket) throws Exception {
+        // Client connected, do anything with the socket
       }
     }, new Consumer<Throwable>() {
       @Override public void accept(Throwable throwable) throws Exception {
-        // Error occured
+        // On error
+      }
+    });
+
+rxBluetooth.connectAsClient(bluetoothDevice, uuid).subscribe(
+    new Consumer<BluetoothSocket>() {
+      @Override public void accept(BluetoothSocket bluetoothSocket) throws Exception {
+        // Connected to bluetooth device, do anything with the socket
+      }
+    }, new Consumer<Throwable>() {
+      @Override public void accept(Throwable throwable) throws Exception {
+        // On error
       }
     });
 ```

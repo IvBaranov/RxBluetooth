@@ -2,6 +2,7 @@ package com.github.ivbaranov.rxbluetooth.example;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
   private static final int REQUEST_PERMISSION_COARSE_LOCATION = 0;
@@ -192,6 +194,28 @@ public class MainActivity extends AppCompatActivity {
         rxBluetooth.cancelDiscovery();
       }
     });
+
+    rxBluetooth.connectAsServer("servername", UUID.randomUUID()).subscribe(
+        new Consumer<BluetoothSocket>() {
+          @Override public void accept(BluetoothSocket bluetoothSocket) throws Exception {
+
+          }
+        }, new Consumer<Throwable>() {
+          @Override public void accept(Throwable throwable) throws Exception {
+
+          }
+        });
+
+    rxBluetooth.connectAsClient(bluetoothDevice, UUID.randomUUID()).subscribe(
+        new Consumer<BluetoothSocket>() {
+          @Override public void accept(BluetoothSocket bluetoothSocket) throws Exception {
+
+          }
+        }, new Consumer<Throwable>() {
+          @Override public void accept(Throwable throwable) throws Exception {
+
+          }
+        });
   }
 
   private void addDevice(BluetoothDevice device) {
