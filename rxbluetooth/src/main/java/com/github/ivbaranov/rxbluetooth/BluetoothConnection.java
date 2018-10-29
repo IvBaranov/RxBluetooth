@@ -33,7 +33,7 @@ import java.util.List;
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
-public class BluetoothConnection {
+public final class BluetoothConnection {
 
   private static final String TAG = BluetoothConnection.class.getName();
 
