@@ -343,7 +343,7 @@ Download
 --------
 Releases are available both in `jcenter` and `mavenCentral` repositories.
 ```groovy
-compile 'com.github.ivbaranov:rxbluetooth2:2.0.1'
+compile 'com.github.ivbaranov:rxbluetooth2:2.0.3'
 ```
 
 #### Snapshots
