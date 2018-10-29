@@ -17,7 +17,7 @@ package com.github.ivbaranov.rxbluetooth.exceptions;
 
 import java.io.IOException;
 
-public class ConnectionClosedException extends IOException {
+public final class ConnectionClosedException extends IOException {
 
   public ConnectionClosedException() {
     super("Connection is closed.");

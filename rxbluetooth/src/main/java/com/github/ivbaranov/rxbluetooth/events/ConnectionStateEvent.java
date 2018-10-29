@@ -28,7 +28,7 @@ import android.bluetooth.BluetoothDevice;
  * {@link BluetoothAdapter#STATE_CONNECTED},
  * {@link BluetoothAdapter#STATE_DISCONNECTING}
  */
-public class ConnectionStateEvent {
+public final class ConnectionStateEvent {
 
   private int state;
   private int previousState;

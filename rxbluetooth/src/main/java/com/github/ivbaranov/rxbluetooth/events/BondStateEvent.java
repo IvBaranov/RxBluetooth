@@ -26,7 +26,7 @@ import android.bluetooth.BluetoothDevice;
  * {@link BluetoothDevice#BOND_BONDING},
  * {@link BluetoothDevice#BOND_BONDED}
  */
-public class BondStateEvent {
+public final class BondStateEvent {
 
   private int state;
   private int previousState;

@@ -22,7 +22,7 @@ import android.bluetooth.BluetoothProfile;
  * disconnected), profile type and {@link BluetoothProfile}. When service state is {@link
  * State#DISCONNECTED} the bluetoothProfile is null.
  */
-public class ServiceEvent {
+public final class ServiceEvent {
 
   public enum State {
     CONNECTED, DISCONNECTED

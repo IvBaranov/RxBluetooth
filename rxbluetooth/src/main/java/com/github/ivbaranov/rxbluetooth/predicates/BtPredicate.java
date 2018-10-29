@@ -22,8 +22,7 @@ import io.reactivex.functions.Predicate;
  * Class that contains predicates for filtering bluetooth states, actions and other indicators
  * received from {@link BroadcastReceiver}.
  */
-public class BtPredicate {
-
+public final class BtPredicate {
   /**
    * Function, which checks if current object equals single argument or one of many
    * arguments. It can be used inside filter(...) method from RxJava.
@@ -42,5 +41,9 @@ public class BtPredicate {
         return false;
       }
     };
+  }
+
+  private BtPredicate() {
+    throw new AssertionError("No instances.");
   }
 }
