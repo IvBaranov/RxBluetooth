@@ -242,21 +242,9 @@ public class BluetoothConnection {
    * Close the streams and socket connection.
    */
   public void closeConnection() {
-    try {
-      connected = false;
-
-      if (inputStream != null) {
-        inputStream.close();
-      }
-
-      if (outputStream != null) {
-        outputStream.close();
-      }
-
-      if (socket != null) {
-        socket.close();
-      }
-    } catch (IOException ignored) {
-    }
+    connected = false;
+    Utils.close(inputStream);
+    Utils.close(outputStream);
+    Utils.close(socket);
   }
 }
