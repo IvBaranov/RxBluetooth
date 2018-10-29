@@ -40,6 +40,10 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
+import io.reactivex.Single;
+import io.reactivex.SingleEmitter;
+import io.reactivex.SingleOnSubscribe;
+import io.reactivex.SingleSource;
 import io.reactivex.android.MainThreadDisposable;
 import io.reactivex.annotations.NonNull;
 import java.io.IOException;
@@ -497,18 +501,45 @@ public class RxBluetooth {
    * @param name service name for SDP record
    * @param uuid uuid for SDP record
    * @return observable with connected {@link BluetoothSocket} on successful connection
+   * @deprecated use {{@link #connectAsServer(String, UUID)}} instead
    */
-  public Observable<BluetoothSocket> observeBluetoothSocket(final String name, final UUID uuid) {
-    return Observable.defer(new Callable<ObservableSource<? extends BluetoothSocket>>() {
-      @Override public ObservableSource<? extends BluetoothSocket> call() throws Exception {
-        return Observable.create(new ObservableOnSubscribe<BluetoothSocket>() {
-          @Override public void subscribe(@NonNull ObservableEmitter<BluetoothSocket> emitter)
-              throws Exception {
+  @Deprecated public Observable<BluetoothSocket> observeBluetoothSocket(final String name, final UUID uuid) {
+    return connectAsServer(name, uuid).toObservable();
+  }
+
+  /**
+   * Create connection to {@link BluetoothDevice} and returns a connected {@link BluetoothSocket}
+   * on successful connection. Notifies observers with {@link IOException} {@code onError()}.
+   *
+   * @param bluetoothDevice bluetooth device to connect
+   * @param uuid uuid for SDP record
+   * @return observable with connected {@link BluetoothSocket} on successful connection
+   * @deprecated use {{@link #connectAsClient(BluetoothDevice, UUID)}} instead
+   */
+  @Deprecated public Observable<BluetoothSocket> observeConnectDevice(final BluetoothDevice bluetoothDevice,
+      final UUID uuid) {
+    return connectAsClient(bluetoothDevice, uuid).toObservable();
+  }
+
+  /**
+   * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket
+   * and returns a connected {@link BluetoothSocket} on successful connection. Notifies observers
+   * with {@link IOException} {@code onError()}.
+   *
+   * @param name service name for SDP record
+   * @param uuid uuid for SDP record
+   * @return Single with connected {@link BluetoothSocket} on successful connection
+   */
+  public Single<BluetoothSocket> connectAsServer(final String name, final UUID uuid) {
+    return Single.defer(new Callable<SingleSource<? extends BluetoothSocket>>() {
+      @Override public SingleSource<? extends BluetoothSocket> call() {
+        return Single.create(new SingleOnSubscribe<BluetoothSocket>() {
+          @Override public void subscribe(@NonNull SingleEmitter<BluetoothSocket> emitter) {
             try {
               BluetoothServerSocket bluetoothServerSocket =
                   bluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
               try {
-                emitter.onNext(bluetoothServerSocket.accept());
+                emitter.onSuccess(bluetoothServerSocket.accept());
               } finally {
                 bluetoothServerSocket.close();
               }
@@ -527,20 +558,19 @@ public class RxBluetooth {
    *
    * @param bluetoothDevice bluetooth device to connect
    * @param uuid uuid for SDP record
-   * @return observable with connected {@link BluetoothSocket} on successful connection
+   * @return Single with connected {@link BluetoothSocket} on successful connection
    */
-  public Observable<BluetoothSocket> observeConnectDevice(final BluetoothDevice bluetoothDevice,
+  public Single<BluetoothSocket> connectAsClient(final BluetoothDevice bluetoothDevice,
       final UUID uuid) {
-    return Observable.defer(new Callable<ObservableSource<? extends BluetoothSocket>>() {
-      @Override public ObservableSource<? extends BluetoothSocket> call() throws Exception {
-        return Observable.create(new ObservableOnSubscribe<BluetoothSocket>() {
-          @Override public void subscribe(@NonNull ObservableEmitter<BluetoothSocket> emitter)
-              throws Exception {
+    return Single.defer(new Callable<SingleSource<? extends BluetoothSocket>>() {
+      @Override public SingleSource<? extends BluetoothSocket> call() {
+        return Single.create(new SingleOnSubscribe<BluetoothSocket>() {
+          @Override public void subscribe(@NonNull SingleEmitter<BluetoothSocket> emitter) {
             BluetoothSocket bluetoothSocket = null;
             try {
               bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
               bluetoothSocket.connect();
-              emitter.onNext(bluetoothSocket);
+              emitter.onSuccess(bluetoothSocket);
             } catch (IOException e) {
               if(bluetoothSocket != null) {
                 try {
