@@ -29,6 +29,7 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
@@ -160,7 +161,7 @@ public final class RxBluetooth {
    *
    * @return unmodifiable set of {@link BluetoothDevice}, or null on error
    */
-  public Set<BluetoothDevice> getBondedDevices() {
+  @Nullable public Set<BluetoothDevice> getBondedDevices() {
     return bluetoothAdapter.getBondedDevices();
   }
 
