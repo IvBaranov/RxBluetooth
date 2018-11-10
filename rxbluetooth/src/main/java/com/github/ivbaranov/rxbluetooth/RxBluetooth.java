@@ -52,6 +52,7 @@ import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.location.LocationManager.GPS_PROVIDER;
 import static android.location.LocationManager.NETWORK_PROVIDER;
 import static android.os.Build.VERSION.SDK_INT;
+import static com.github.ivbaranov.rxbluetooth.Utils.createRfcommSocket;
 
 /**
  * Enables clients to listen to bluetooth events using RxJava Observables.
@@ -478,7 +479,7 @@ public final class RxBluetooth {
 
   /**
    * Create connection to {@link BluetoothDevice} and returns a connected {@link BluetoothSocket}
-   * on successful connection. Notifies observers with {@link IOException} {@code onError()}.
+   * on successful connection. Notifies observers with {@link IOException} via {@code onError()}.
    *
    * @param bluetoothDevice bluetooth device to connect
    * @param uuid uuid for SDP record
@@ -519,7 +520,7 @@ public final class RxBluetooth {
 
   /**
    * Create connection to {@link BluetoothDevice} and returns a connected {@link BluetoothSocket}
-   * on successful connection. Notifies observers with {@link IOException} {@code onError()}.
+   * on successful connection. Notifies observers with {@link IOException} via {@code onError()}.
    *
    * @param bluetoothDevice bluetooth device to connect
    * @param uuid uuid for SDP record
@@ -535,7 +536,42 @@ public final class RxBluetooth {
           bluetoothSocket.connect();
           emitter.onSuccess(bluetoothSocket);
         } catch (IOException e) {
-          if(bluetoothSocket != null) {
+          if (bluetoothSocket != null) {
+            try {
+              bluetoothSocket.close();
+            } catch (IOException suppressed) {
+              if (SDK_INT >= 19) {
+                e.addSuppressed(suppressed);
+              }
+            }
+          }
+          emitter.onError(e);
+        }
+      }
+    });
+  }
+
+  /**
+   * Create connection to {@link BluetoothDevice} via createRfcommSocket and returns a connected {@link BluetoothSocket}
+   * on successful connection.
+   * Note: createRfcommSocket is not public API and hence this might break in the future.
+   * Notifies observers with {@link IOException} or any reflection related exception via {@code onError()}.
+   *
+   * @param bluetoothDevice bluetooth device to connect
+   * @param channel RFCOMM channel to connect to
+   * @return Single with connected {@link BluetoothSocket} on successful connection
+   */
+  public Single<BluetoothSocket> connectAsClient(final BluetoothDevice bluetoothDevice,
+      final int channel) {
+    return Single.create(new SingleOnSubscribe<BluetoothSocket>() {
+      @Override public void subscribe(@NonNull SingleEmitter<BluetoothSocket> emitter) {
+        BluetoothSocket bluetoothSocket = null;
+        try {
+          bluetoothSocket = createRfcommSocket(bluetoothDevice, channel);
+          bluetoothSocket.connect();
+          emitter.onSuccess(bluetoothSocket);
+        } catch (IOException e) {
+          if (bluetoothSocket != null) {
             try {
               bluetoothSocket.close();
             } catch (IOException suppressed) {
