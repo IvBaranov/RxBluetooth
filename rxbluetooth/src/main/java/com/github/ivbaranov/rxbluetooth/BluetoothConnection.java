@@ -39,12 +39,12 @@ public final class BluetoothConnection {
 
   private BluetoothSocket socket;
 
-  private InputStream inputStream;
+  InputStream inputStream;
   private OutputStream outputStream;
 
   private Flowable<Byte> observeInputStream;
 
-  private boolean connected = false;
+  boolean connected = false;
 
   /**
    * Container for simplifying read and write from/to {@link BluetoothSocket}.

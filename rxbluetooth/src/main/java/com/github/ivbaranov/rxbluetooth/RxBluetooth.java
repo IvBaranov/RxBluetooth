@@ -59,8 +59,8 @@ import static com.github.ivbaranov.rxbluetooth.Utils.createRfcommSocket;
  * Enables clients to listen to bluetooth events using RxJava Observables.
  */
 public final class RxBluetooth {
-  private BluetoothAdapter bluetoothAdapter;
-  private Context context;
+  BluetoothAdapter bluetoothAdapter;
+  Context context;
 
   public RxBluetooth(Context context) {
     this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
