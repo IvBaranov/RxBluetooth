@@ -3,7 +3,6 @@ apply plugin: 'com.novoda.bintray-release'
 
 android {
   compileSdkVersion COMPILE_SDK_VERSION
-  buildToolsVersion BUILD_TOOLS_VERSION
 
   defaultConfig {
     minSdkVersion MIN_SDK_VERSION
@@ -17,7 +16,7 @@ android {
 }
 
 dependencies {
-  implementation "com.android.support:support-annotations:$SUPPORT_LIBRARY_VERSION"
+  implementation 'androidx.annotation:annotation:1.0.1'
 
   api "io.reactivex.rxjava2:rxjava:$RXJAVA_VERSION"
   api "io.reactivex.rxjava2:rxandroid:$RXANDROID_VERSION"
