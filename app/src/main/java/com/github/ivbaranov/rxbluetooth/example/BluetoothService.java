@@ -4,7 +4,7 @@ import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 import com.github.ivbaranov.rxbluetooth.RxBluetooth;
 import io.reactivex.disposables.CompositeDisposable;
