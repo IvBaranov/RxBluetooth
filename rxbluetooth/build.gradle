@@ -16,7 +16,7 @@ android {
 }
 
 dependencies {
-  implementation 'androidx.annotation:annotation:1.0.1'
+  implementation "androidx.annotation:annotation:$ANDROIDX_ANNOTATION_VERSION"
 
   api "io.reactivex.rxjava2:rxjava:$RXJAVA_VERSION"
   api "io.reactivex.rxjava2:rxandroid:$RXANDROID_VERSION"
