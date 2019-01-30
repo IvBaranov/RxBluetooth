@@ -355,6 +355,13 @@ Releases are available both in `jcenter` and `mavenCentral` repositories.
 compile 'com.github.ivbaranov:rxbluetooth2:2.1.0'
 ```
 
+| Branch  | Artifact Id | Support library version  | Latest version |
+|:-------:|:-----------:|:------------------------:|:--------------:|
+| [`rxjava-1.x`](https://github.com/IvBaranov/RxBluetooth/tree/rxjava-1.x) | `rxbluetooth` | 25.3.1 | 0.1.6 |
+| [`rxjava-2.x`](https://github.com/IvBaranov/RxBluetooth/tree/rxjava-2.x) | `rxbluetooth2` | 25.3.1 | 2.0.4 |
+| [`rxjava-2.x`](https://github.com/IvBaranov/RxBluetooth/tree/rxjava-2.x) | `rxbluetooth2` | AndroidX | 2.1.0 |
+
+
 #### Snapshots
 Snapshots of the development version are available in [Sonatype's `snapshots` repository][snapshots].
 
