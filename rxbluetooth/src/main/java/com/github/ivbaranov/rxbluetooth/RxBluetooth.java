@@ -29,14 +29,20 @@ import android.content.pm.PackageManager;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Parcelable;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import android.text.TextUtils;
+
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
 import com.github.ivbaranov.rxbluetooth.events.ConnectionStateEvent;
 import com.github.ivbaranov.rxbluetooth.events.ServiceEvent;
 import com.github.ivbaranov.rxbluetooth.exceptions.GetProfileProxyException;
+
+import java.io.IOException;
+import java.util.Set;
+import java.util.UUID;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -45,9 +51,6 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.MainThreadDisposable;
 import io.reactivex.annotations.NonNull;
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.location.LocationManager.GPS_PROVIDER;
@@ -643,7 +646,9 @@ public final class RxBluetooth {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
           @Override public void onReceive(Context context, Intent intent) {
                   Parcelable[] uuids = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
-                  emitter.onNext(uuids);
+                  if (uuids != null) {
+                    emitter.onNext(uuids);
+                  }
                   emitter.onComplete();
               }
         };
