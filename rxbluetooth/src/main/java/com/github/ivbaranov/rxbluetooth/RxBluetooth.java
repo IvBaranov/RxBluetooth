@@ -643,7 +643,9 @@ public final class RxBluetooth {
         final BroadcastReceiver receiver = new BroadcastReceiver() {
           @Override public void onReceive(Context context, Intent intent) {
                   Parcelable[] uuids = intent.getParcelableArrayExtra(BluetoothDevice.EXTRA_UUID);
-                  emitter.onNext(uuids);
+                  if (uuids != null) {
+                    emitter.onNext(uuids);
+                  }
                   emitter.onComplete();
               }
         };
