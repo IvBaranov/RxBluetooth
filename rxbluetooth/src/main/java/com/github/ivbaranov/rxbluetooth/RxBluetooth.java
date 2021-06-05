@@ -502,29 +502,11 @@ public final class RxBluetooth {
    * @return Single with connected {@link BluetoothSocket} on successful connection
    */
   public Single<BluetoothSocket> connectAsServer(final String name, final UUID uuid) {
-    return connectAsServer(name, uuid, true);
-  }
-
-    /**
-     * Opens {@link BluetoothServerSocket}, listens for a single connection request, releases socket
-     * and returns a connected {@link BluetoothSocket} on successful connection. Notifies observers
-     * with {@link IOException} {@code onError()}.
-     *
-     * @param name service name for SDP record
-     * @param uuid uuid for SDP record
-     * @param secure connection security status
-     * @return Single with connected {@link BluetoothSocket} on successful connection
-     */
-  public Single<BluetoothSocket> connectAsServer(final String name, final UUID uuid, final boolean secure) {
     return Single.create(new SingleOnSubscribe<BluetoothSocket>() {
       @Override public void subscribe(@NonNull SingleEmitter<BluetoothSocket> emitter) {
         try {
-          BluetoothServerSocket bluetoothServerSocket;
-          if (secure)
-            bluetoothServerSocket = bluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
-          else
-            bluetoothServerSocket = bluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(name, uuid);
-
+          BluetoothServerSocket bluetoothServerSocket =
+              bluetoothAdapter.listenUsingRfcommWithServiceRecord(name, uuid);
           try {
             emitter.onSuccess(bluetoothServerSocket.accept());
           } finally {
@@ -547,28 +529,11 @@ public final class RxBluetooth {
    */
   public Single<BluetoothSocket> connectAsClient(final BluetoothDevice bluetoothDevice,
       final UUID uuid) {
-    return connectAsClient(bluetoothDevice, uuid, true);
-  }
-
-    /**
-     * Create connection to {@link BluetoothDevice} and returns a connected {@link BluetoothSocket}
-     * on successful connection. Notifies observers with {@link IOException} via {@code onError()}.
-     *
-     * @param bluetoothDevice bluetooth device to connect
-     * @param uuid uuid for SDP record
-     * @param secure connection security status
-     * @return Single with connected {@link BluetoothSocket} on successful connection
-     */
-    public Single<BluetoothSocket> connectAsClient(final BluetoothDevice bluetoothDevice,
-      final UUID uuid, final boolean secure) {
     return Single.create(new SingleOnSubscribe<BluetoothSocket>() {
       @Override public void subscribe(@NonNull SingleEmitter<BluetoothSocket> emitter) {
         BluetoothSocket bluetoothSocket = null;
         try {
-          if (secure)
-            bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
-          else
-            bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
+          bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
           bluetoothSocket.connect();
           emitter.onSuccess(bluetoothSocket);
         } catch (IOException e) {
