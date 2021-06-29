@@ -31,6 +31,7 @@ import android.os.Build;
 import android.os.Parcelable;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import com.github.ivbaranov.rxbluetooth.events.AclEvent;
 import com.github.ivbaranov.rxbluetooth.events.BondStateEvent;
@@ -128,6 +129,20 @@ public final class RxBluetooth {
   }
 
   /**
+   * This will issue a request to enable Bluetooth through the system settings (without stopping
+   * your application) via ACTION_REQUEST_ENABLE action Intent.
+   *
+   * @param fragment Fragment
+   * @param requestCode request code
+   */
+  public void enableBluetooth(Fragment fragment, int requestCode) {
+    if (!bluetoothAdapter.isEnabled()) {
+      Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+      fragment.startActivityForResult(enableBtIntent, requestCode);
+    }
+  }
+
+   /**
    * Turn on the local Bluetooth adapter — do not use without explicit user action to turn on
    * Bluetooth.
    *
