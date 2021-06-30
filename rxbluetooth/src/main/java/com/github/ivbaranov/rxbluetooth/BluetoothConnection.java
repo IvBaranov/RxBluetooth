@@ -153,7 +153,7 @@ public final class BluetoothConnection {
             }
 
             if (found) {
-              if (!delimitersMatched()) {
+              if (delimitersMatched()) {
                 emit();
               }
             } else {
